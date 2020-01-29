@@ -35,5 +35,6 @@ if (toctitle != null) {
 
 var toctitle = document.getElementById('footer-text');
 if (toctitle != null) {
-    toctitle.append(" ©5i.work")
+    toctitle.insertAdjacentHTML("beforeend", " ©<a href='https://5i.work'>5i.work</a> | <a style='font-size:14px;' href='http://www.beian.miit.gov.cn/'>浙ICP备15019268号</a>")
 }
+
