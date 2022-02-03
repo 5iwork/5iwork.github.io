@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>发布自动生成changelog</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>发布自动生成changelog</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_命令">1. 命令</a></li>
+<li><a href="#_git_cz">2. git cz</a></li>
+<li><a href="#_生成asciidoc格式的changelog">3. 生成Asciidoc格式的changelog</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_命令"><a class="anchor" href="#_命令"></a>1. 命令</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">git-release-notes -t "(feat|bug)：(.*)" -m type -m title 1.8.1...1.8.3 /Users/liming/guiyanlcs/code/framework/lsmdp/document/static/template/release-note.ejs &gt; ~/release.adoc</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_git_cz"><a class="anchor" href="#_git_cz"></a>2. git cz</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">安装</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">npm install -g commitizen
+npm install -g cz-conventional-changelog
+echo '{ "path": "cz-conventional-changelog" }' &gt; ~/.czrc</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">使用</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">git gz</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_生成asciidoc格式的changelog"><a class="anchor" href="#_生成asciidoc格式的changelog"></a>3. 生成Asciidoc格式的changelog</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>使用组件：https://github.com/git-chglog/git-chglog</p>
+</div>
+<div class="listingblock">
+<div class="title">使用</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">git-chglog -c ~/.chglog/CHANGELOG.adoc.tpl -o CHANGELOG.adoc</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">CHANGELOG.adoc.tpl</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">{{ range .Versions }}
+[#{{ .Tag.Name }}]
+=== {{ if .Tag.Previous }} link:++{{ $.Info.RepositoryURL }}/compare/{{ .Tag.Previous.Name }}...{{ .Tag.Name }}++[{{ .Tag.Name }}]{{ else }}{{ .Tag.Name }}{{ end }} ({{ datetime "2006-01-02" .Tag.Date }})
+
+{{ range .CommitGroups -}}
+==== {{ .Title }}
+
+{{ range .Commits -}}
+* {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}
+{{ end }}
+{{ end -}}
+
+{{- if .NoteGroups -}}
+{{ range .NoteGroups -}}
+==== {{ .Title }}
+
+{{ range .Notes }}
+{{ .Body }}
+{{ end }}
+{{ end -}}
+{{ end -}}
+{{ end -}}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

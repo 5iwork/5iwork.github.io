@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>HTTPS无法正确获取</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>HTTPS无法正确获取</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_相关资料">1. 相关资料</a></li>
+<li><a href="#_问题原因解析">2. 问题原因解析</a></li>
+<li><a href="#_解决方案">3. 解决方案</a>
+<ul class="sectlevel2">
+<li><a href="#_spring过滤器来改写">3.1. Spring过滤器来改写</a></li>
+<li><a href="#_通过增加独立head变量传递">3.2. 通过增加独立Head变量传递</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_相关资料"><a class="anchor" href="#_相关资料"></a>1. 相关资料</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://datatracker.ietf.org/doc/html/rfc7239" class="bare">https://datatracker.ietf.org/doc/html/rfc7239</a></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">X-Forwarded-For (XFF)</dt>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>X-Forwarded-For: &lt;client&gt;, &lt;proxy1&gt;, &lt;proxy2&gt;</pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">X-Forwarded-Port</dt>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_问题原因解析"><a class="anchor" href="#_问题原因解析"></a>2. 问题原因解析</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">org/springframework/cloud/netflix/zuul/filters/pre/PreDecorationFilter.java</div>
+<div class="content">
+<pre>private void addProxyHeaders(RequestContext ctx, Route route) {
+    HttpServletRequest request = ctx.getRequest();
+    String host = toHostHeader(request);
+    String port = String.valueOf(request.getServerPort());
+    String proto = request.getScheme();
+    if (hasHeader(request, "X-Forwarded-Host")) {
+        host = request.getHeader("X-Forwarded-Host") + "," + host;
+        if (!hasHeader(request, "X-Forwarded-Port")) {
+            if (hasHeader(request, "X-Forwarded-Proto")) {
+                StringBuilder builder = new StringBuilder();
+                for (String previous : StringUtils.commaDelimitedListToStringArray(request.getHeader("X-Forwarded-Proto"))) {
+                    if (builder.length()&gt;0) {
+                        builder.append(",");
+                    }
+                    builder.append("https".equals(previous) ? "443" : "80");
+                }
+                builder.append(",").append(port);
+                port = builder.toString();
+            }
+        } else {
+            port = request.getHeader("X-Forwarded-Port") + "," + port;
+        }
+        proto = request.getHeader("X-Forwarded-Proto") + "," + proto;
+    }
+    ctx.addZuulRequestHeader("X-Forwarded-Host", host);
+    ctx.addZuulRequestHeader("X-Forwarded-Port", port);
+    ctx.addZuulRequestHeader(ZuulHeaders.X_FORWARDED_PROTO, proto);
+    addProxyPrefix(ctx, route);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>org.springframework.boot.autoconfigure.web.embedded.TomcatWebServerFactoryCustomizer.java类中定制:</p>
+</div>
+<div class="listingblock">
+<div class="title">org.apache.catalina.valves.RemoteIpValve.java</div>
+<div class="content">
+<pre>public void invoke(Request request, Response response) throws IOException, ServletException {
+//...
+	if (protocolHeader != null) {
+	    String protocolHeaderValue = request.getHeader(protocolHeader);
+	    if (protocolHeaderValue == null) {
+	        // Don't modify the secure, scheme and serverPort attributes
+	        // of the request
+	    } else if (isForwardedProtoHeaderValueSecure(protocolHeaderValue)) {
+	        request.setSecure(true);
+	        request.getCoyoteRequest().scheme().setString("https");
+	        setPorts(request, httpsServerPort);
+	    } else {
+	        request.setSecure(false);
+	        request.getCoyoteRequest().scheme().setString("http");
+	        setPorts(request, httpServerPort);
+	    }
+	}
+//...
+}
+private boolean isForwardedProtoHeaderValueSecure(String protocolHeaderValue) {
+    if (!protocolHeaderValue.contains(",")) {
+        return protocolHeaderHttpsValue.equalsIgnoreCase(protocolHeaderValue);
+    }
+    String[] forwardedProtocols = commaDelimitedListToStringArray(protocolHeaderValue);
+    if (forwardedProtocols.length == 0) {
+        return false;
+    }
+    for (int i = 0; i &lt; forwardedProtocols.length; i++) {
+        if (!protocolHeaderHttpsValue.equalsIgnoreCase(forwardedProtocols[i])) {
+            return false;
+        }
+    }
+    return true;
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_解决方案"><a class="anchor" href="#_解决方案"></a>3. 解决方案</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_spring过滤器来改写"><a class="anchor" href="#_spring过滤器来改写"></a>3.1. Spring过滤器来改写</h3>
+<div class="paragraph">
+<p>启用：ForwardedHeaderFilter（注：spring默认不开启）</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>server:
+  forward-headers-strategy: framework</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>或者</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Bean
+FilterRegistrationBean&lt;ForwardedHeaderFilter&gt; forwardedHeaderFilter()
+{
+    FilterRegistrationBean&lt;ForwardedHeaderFilter&gt; bean = new FilterRegistrationBean&lt;&gt;();
+    bean.setFilter(new ForwardedHeaderFilter());
+    return bean;
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在最外层nginx配置信任边界代理</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>proxy_set_header X-Forwarded-Proto $scheme;
+proxy_set_header X-Forwarded-Port $server_port;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_通过增加独立head变量传递"><a class="anchor" href="#_通过增加独立head变量传递"></a>3.2. 通过增加独立Head变量传递</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>最外层Nginx</p>
+<div class="listingblock">
+<div class="content">
+<pre>proxy_set_header Host $host:$server_port;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+proxy_set_header X-Url-Scheme $scheme;
+proxy_set_header X-Url-Port $server_port;
+proxy_set_header X-Forwarded-Host $http_x_forwarded_host;
+proxy_set_header X-Forwarded-Ssl on;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>非最外层Nginx</p>
+<div class="listingblock">
+<div class="content">
+<pre>proxy_set_header Host $http_host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+proxy_set_header X-Url-Scheme $http_x_forwarded_proto;
+proxy_set_header X-Url-Port $http_x_forwarded_proto;;
+proxy_set_header X-Forwarded-Host $http_x_forwarded_host;
+proxy_set_header X-Forwarded-Ssl on;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>SpringBoot</p>
+<div class="listingblock">
+<div class="content">
+<pre>server:
+  tomcat:
+    protocol-header: X-Url-Scheme
+    port-header: X-Url-Port</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-05 10:08:42 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

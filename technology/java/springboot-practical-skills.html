@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>瘦客户端</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_瘦客户端">1. 瘦客户端</a></li>
+<li><a href="#_使用systemd优雅启停应用">2. 使用systemd优雅启停应用</a></li>
+<li><a href="#_参考">3. 参考</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_瘦客户端"><a class="anchor" href="#_瘦客户端"></a>1. 瘦客户端</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_使用systemd优雅启停应用"><a class="anchor" href="#_使用systemd优雅启停应用"></a>2. 使用systemd优雅启停应用</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>添加依赖</p>
+<div class="listingblock">
+<div class="title">pom.xm的build.plugins节点</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;plugin&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+    &lt;configuration&gt;
+        &lt;executable&gt;true&lt;/executable&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>添加服务</p>
+<div class="listingblock">
+<div class="title">/etc/systemd/system/myapp.service</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">[Unit]
+Description=myapp
+After=syslog.target
+
+[Service]
+User=root
+ExecStart=/var/myapp/myapp.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>配置
+在jar包同目录下增加同名配置文件</p>
+<div class="listingblock">
+<div class="title">myapp.conf</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="conf" class="language-conf hljs">JAVA_OPTS="-server -Xms100m -Xmx300m -Xmn128m -Xss256k"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>启停</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">systemctl enable myapp # 开机自启动
+systemctl status|start|stop|restart myapp
+journalctl -u myapp # 看日志，shift+g跳转到最后一行</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_参考"><a class="anchor" href="#_参考"></a>3. 参考</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html" class="bare">https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html</a></p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

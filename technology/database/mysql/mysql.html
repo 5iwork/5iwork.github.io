@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>配置</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_配置">1. 配置</a>
+<ul class="sectlevel2">
+<li><a href="#_公共配置">1.1. 公共配置</a></li>
+</ul>
+</li>
+<li><a href="#_主库">2. 主库</a></li>
+<li><a href="#_从库">3. 从库</a></li>
+<li><a href="#_备库备份">4. 备库备份</a></li>
+<li><a href="#_关键配置">5. 关键配置</a>
+<ul class="sectlevel2">
+<li><a href="#_主备同步">5.1. 主备同步</a></li>
+</ul>
+</li>
+<li><a href="#_主主同步">6. 主主同步</a></li>
+<li><a href="#_链式同步">7. 链式同步</a></li>
+<li><a href="#_星式同步">8. 星式同步</a>
+<ul class="sectlevel2">
+<li><a href="#_从库提升为主库">8.1. 从库提升为主库</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_配置"><a class="anchor" href="#_配置"></a>1. 配置</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_公共配置"><a class="anchor" href="#_公共配置"></a>1.1. 公共配置</h3>
+<div class="listingblock">
+<div class="title">[mysqld]配置节点</div>
+<div class="content">
+<pre># 通用
+character-set-server=utf8mb4
+init-connect='SET NAMES utf8mb4'
+
+lower_case_table_names=1
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+skip-name-resolve=ON
+transaction-isolation=READ-COMMITTED
+
+# 链接数
+max_connections=1100
+max_user_connections=1000
+max_connect_errors=1000
+
+# 复制忽略表，读写分离
+replicate-ignore-db=mysql,information_schema,performance_schema
+# replicate-wild-ignore-table=mysql.%
+# replicate-wild-ignore-table=performance_schema.%
+# replicate-wild-ignore-table=information_schema.%
+
+# 开启binlog日志
+log-bin=mysql-bin
+binlog_cache_size=4M
+binlog_format=mixed
+expire_logs_days=10</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">[mysql]配置节点</div>
+<div class="content">
+<pre>default-character-set=utf8mb4</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_主库"><a class="anchor" href="#_主库"></a>2. 主库</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">[mysqld]配置节点</div>
+<div class="content">
+<pre># 以下是主数据库配置
+
+# 该配置需要根据实际情况配置，确保网络内唯一
+server-id=1</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_从库"><a class="anchor" href="#_从库"></a>3. 从库</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">[mysqld]配置节点</div>
+<div class="content">
+<pre># 从数据库配置
+
+# 该配置需要根据实际情况配置，确保网络内唯一
+server-id=2
+
+# 是否把主同步过来的操作写到自己的log-bin中
+log_slave_updates=1
+# 复制log
+relay-log=mysql-relay-bin
+# 配置安全恢复，防止slave宕机出现复制错误
+relay-log-recovery=1
+relay-log-purge=1
+# 对应表名为mysql.slave_relay_log_info
+relay-log-info-repository=table
+# 对应表名为mysql.slave_master_info
+master-info-repository=table
+
+# 设置只读
+read_only=1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>创建查询用户</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>create user '用户'@'%' identified by '密码';
+grant Select on 数据库.* to '用户'@'%';
+flush privileges;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_备库备份"><a class="anchor" href="#_备库备份"></a>4. 备库备份</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_关键配置"><a class="anchor" href="#_关键配置"></a>5. 关键配置</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_主备同步"><a class="anchor" href="#_主备同步"></a>5.1. 主备同步</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">server-id=58 # 主备主主网络唯一
+log-bin=mysql-bin # 开启binlog
+log_slave_updates=1 # 主库同步过来的操作是否写到binlog中，链式同步 A-&gt;B-&gt;C 很有用
+read_only=1 # 是否只读</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_主主同步"><a class="anchor" href="#_主主同步"></a>6. 主主同步</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://www.linuxidc.com/Linux/2017-10/147549.htm" class="bare">https://www.linuxidc.com/Linux/2017-10/147549.htm</a></p>
+</div>
+<div class="qlist qanda">
+<ol>
+<li>
+<p><em>如果a&#8594;b b&#8594;a 这样的双master架构下，a,b都打开log_slave_updates选项会不会出现无限循环的状态</em></p>
+<p>mysql已经考滤到了这个问题，每条bin-log都会记录执行语句的源server_id.当slave读到语句的server_id等于本身的ID的时候，不会忽略执行，所以我们不用担心a,b会不会无限循环下去。</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_链式同步"><a class="anchor" href="#_链式同步"></a>7. 链式同步</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_星式同步"><a class="anchor" href="#_星式同步"></a>8. 星式同步</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_从库提升为主库"><a class="anchor" href="#_从库提升为主库"></a>8.1. 从库提升为主库</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>确保所有的relay log全部更新完毕，在每个从库上执行 <code>stop slave io_thread; show processlist;`直到看到 `Slave has read all relay log; waiting for more updates</code> ,则表示从库更新都执行完毕了</p>
+</li>
+<li>
+<p>登陆所有从库，查看master.info文件，对比选择pos最大的作为新的主库，这里我们选择192.168.1.102为新的主库</p>
+</li>
+<li>
+<p>登陆192.168.1.102，执行stop slave; 并进入数据库目录，删除master.info和relay-log.info文件, 配置my.cnf文件，开启log-bin,如果有
+log-slaves-updates和read-only则要注释掉，执行reset master</p>
+</li>
+<li>
+<p>创建用于同步的用户并授权slave，同第五大步骤</p>
+</li>
+<li>
+<p>登录另外一台从库，执行 <code>stop slave</code> 停止同步</p>
+</li>
+<li>
+<p>根据第七大步骤连接到新的主库</p>
+</li>
+<li>
+<p>执行start slave;</p>
+</li>
+<li>
+<p>修改新的master数据，测试slave是否同步更新</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>参考：https://www.cnblogs.com/alinuxer/p/9890462.html
+=== 导出视图报错</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>查看视图创建语句</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>show create table 视图名\G;</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>建立一个该视图对应的的用户，并授权</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>create user '用户名'@'%' identified by '密码';
+grant all privileges on 数据库.* to '用户名'@'%';
+flush privileges;</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>mysqldump -uroot -p密码 -h127.0.0.1 -P3306 --single-transaction --flush-logs --master-data=2 --databases 多个数据库以空格分开|gzip -9 &gt; /home/backup.sql.gz</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>grant replication slave on *.* to 'replicate'@'IP' identified by '密码';
+flush privileges;</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-05 09:44:46 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

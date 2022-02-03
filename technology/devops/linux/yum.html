@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Yum使用</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Yum使用</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_缺少共享库">1. 缺少共享库</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_缺少共享库"><a class="anchor" href="#_缺少共享库"></a>1. 缺少共享库</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">yum provides libdbus-glib-1.so.2 <i class="conum" data-value="1"></i><b>(1)</b>
+yum install dbus-glib-0.100-7.el7.i686 <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>查找该共享库所在包</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>根据1中查到的包，进行安装</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

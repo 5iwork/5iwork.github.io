@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>字段映射</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>字段映射</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_常用字段与java的映射">1. 常用字段与java的映射</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_常用字段与java的映射"><a class="anchor" href="#_常用字段与java的映射"></a>1. 常用字段与java的映射</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. 字段对应关系</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Mysql</th>
+<th class="tableblock halign-left valign-top">Oracle</th>
+<th class="tableblock halign-left valign-top">Java</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUMBER(10,0)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BIGINT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUMBER(19,0)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DECIMAL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLOAT(24)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.math.BigDecimal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DOUBLE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLOAT(24)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Double</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLOAT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLOAT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Float</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TEXT TINYTEXT MEDIUMTEXT LONGTEXT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CLOB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TINYINT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUMBER(3,0)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BLOB TINYBLOB LONGBLOB MEDIUMBLOB LONGBLOB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BLOB RAW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">byte[]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.sql.Date</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.sql.Time</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATETIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.sql.Timestamp</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-05 10:23:13 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Keepalived+Nginx高可用</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Keepalived+Nginx高可用</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_安装">1. 安装</a></li>
+<li><a href="#_配置">2. 配置</a>
+<ul class="sectlevel2">
+<li><a href="#_主节点配置">2.1. 主节点配置</a></li>
+<li><a href="#_备节点配置">2.2. 备节点配置</a></li>
+</ul>
+</li>
+<li><a href="#_主备节点分别执行">3. 主备节点分别执行</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_安装"><a class="anchor" href="#_安装"></a>1. 安装</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">#wget https://www.keepalived.org/software/keepalived-2.0.19.tar.gz
+curl -L https://www.keepalived.org/software/keepalived-2.0.19.tar.gz -o keepalived-2.0.19.tar.gz
+tar -xvf keepalived-2.0.19.tar.gz -C ./
+
+yum install gcc cpp glibc-devel glibc-headers kernel-headers libmpc mpfr openssl openssl-devel libnl libnl-devel
+
+cd keepalived-2.0.19
+#执行配置命令
+./configure --prefix=/usr/local/keepalived
+#编译
+make
+#安装
+make install
+
+ln -s /usr/local/keepalived/sbin/keepalived /usr/sbin/keepalived</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_配置"><a class="anchor" href="#_配置"></a>2. 配置</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_主节点配置"><a class="anchor" href="#_主节点配置"></a>2.1. 主节点配置</h3>
+<div class="listingblock">
+<div class="title">mkdir /etc/keepalived &amp;&amp; vi /etc/keepalived/keepalived.conf</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">global_defs {
+   router_id nginx-01       # 定义路由器标识信息，相同的局域网唯一，标识本节点的字条串
+}
+
+## keepalived 会定时执行脚本并对脚本执行的结果进行分析，动态调整 vrrp_instance 的优先级。
+#  如果脚本执行结果为 0，并且 weight 配置的值大于 0，则优先级相应的增加。
+#  如果脚本执行结果非 0，并且 weight配置的值小于 0，则优先级相应的减少。
+#  其他情况，维持原本配置的优先级，即配置文件中 priority 对应的值。
+vrrp_script chk_nginx {
+    script "/usr/local/bin/nginx_check.sh"
+    interval 3
+    weight -20
+}
+
+vrrp_instance VI_1 {
+    state MASTER            # 主-MASTER 备-BACKUP
+    interface eth0          # 绑定虚拟 IP 的网络接口，与本机 IP 地址所在的网络接口相同 MUST
+    virtual_router_id 51    # 虚拟路由的 ID 号， 两个节点设置必须一样， 可选 IP 最后一段使用, 相同的 VRID 为一个组，他将决定多播的 MAC 地址
+    priority 100            # 优先级决定是主还是备 --&gt; 越大越优先，节点优先级， 值范围 0-254， MASTER 要比 BACKUP 高
+    advert_int 1            # 主备心跳通讯时间间隔，组播信息发送间隔，两个节点设置必须一样， 默认 1s
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        192.168.5.100       # 设备之间使用的虚拟ip地址
+    }
+    track_script {
+      chk_nginx
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_备节点配置"><a class="anchor" href="#_备节点配置"></a>2.2. 备节点配置</h3>
+<div class="listingblock">
+<div class="title">mkdir /etc/keepalived &amp;&amp; vi /etc/keepalived/keepalived.conf</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">global_defs {
+   router_id nginx-02       # 定义路由器标识信息，相同的局域网唯一，标识本节点的字条串
+}
+
+## keepalived 会定时执行脚本并对脚本执行的结果进行分析，动态调整 vrrp_instance 的优先级。
+#  如果脚本执行结果为 0，并且 weight 配置的值大于 0，则优先级相应的增加。
+#  如果脚本执行结果非 0，并且 weight配置的值小于 0，则优先级相应的减少。
+#  其他情况，维持原本配置的优先级，即配置文件中 priority 对应的值。
+vrrp_script chk_nginx {
+    script "/usr/local/bin/nginx_check.sh"
+    interval 3
+    weight -20
+}
+
+vrrp_instance VI_1 {
+    state BACKUP            # 主-MASTER 备-BACKUP
+    interface eth0          # 绑定虚拟 IP 的网络接口，与本机 IP 地址所在的网络接口相同 MUST
+    virtual_router_id 51    # 虚拟路由的 ID 号， 两个节点设置必须一样， 可选 IP 最后一段使用, 相同的 VRID 为一个组，他将决定多播的 MAC 地址
+    priority 90             # 优先级决定是主还是备 --&gt; 越大越优先，节点优先级， 值范围 0-254， MASTER 要比 BACKUP 高
+    advert_int 1            # 主备心跳通讯时间间隔，组播信息发送间隔，两个节点设置必须一样， 默认 1s
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        192.168.5.100       # 设备之间使用的虚拟ip地址
+    }
+    track_script {
+      chk_nginx
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_主备节点分别执行"><a class="anchor" href="#_主备节点分别执行"></a>3. 主备节点分别执行</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>检查脚本</p>
+<div class="listingblock">
+<div class="title">vi /usr/local/bin/nginx_check.sh</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">#!/bin/bash
+set -x
+run=`ps -C nginx --no-header | wc -l`
+if [ $run -eq 0 ]; then
+    /usr/sbin/nginx -s stop
+    /usr/sbin/nginx
+    sleep 2
+    restart=`ps -C nginx --no-header | wc -l`
+    if [ $restart -eq 0 ]; then
+        echo `date`':  nginx is not healthy, try to killall keepalived' &gt;&gt; /var/log/keepalived.log
+        systemctl stop keepalived
+    fi
+fi</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>赋权</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">chmod a+x /usr/local/bin/nginx_check.sh</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>启动</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">systemctl start keepalived</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

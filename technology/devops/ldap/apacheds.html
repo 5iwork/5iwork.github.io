@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>ApacheDS</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>ApacheDS</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_下载">1. 下载</a></li>
+<li><a href="#_安装">2. 安装</a></li>
+<li><a href="#_设置">3. 设置</a></li>
+<li><a href="#_附录">4. 附录</a>
+<ul class="sectlevel2">
+<li><a href="#_ldapmodify参数说明">4.1. ldapmodify参数说明</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_下载"><a class="anchor" href="#_下载"></a>1. 下载</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>服务端： <a href="https://directory.apache.org/apacheds/download/download-linux-bin.html" class="bare">https://directory.apache.org/apacheds/download/download-linux-bin.html</a></p>
+</li>
+<li>
+<p>客户端： <a href="https://directory.apache.org/studio/downloads.html" class="bare">https://directory.apache.org/studio/downloads.html</a></p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_安装"><a class="anchor" href="#_安装"></a>2. 安装</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>启动服务端</p>
+</li>
+<li>
+<p>启动客户端</p>
+</li>
+<li>
+<p>配置客户端链接</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>端口：10389</p>
+</li>
+<li>
+<p>加密方式：不加密</p>
+</li>
+<li>
+<p>账号dn: uid=admin,ou=system</p>
+</li>
+<li>
+<p>密码：secret</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_设置"><a class="anchor" href="#_设置"></a>3. 设置</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>禁用匿名登录，去掉勾选：Overview &#8594; Option &#8594; Allow anonymous acsess</p>
+</li>
+<li>
+<p>密码策略：Password Policy(<a href="https://directory.apache.org/apacheds/advanced-ug/4.3-password-policy.html" class="bare">https://directory.apache.org/apacheds/advanced-ug/4.3-password-policy.html</a>)</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>历史密码(ads-pwdInHistory)：5</p>
+</li>
+<li>
+<p>密码最小长度(ads-pwdMinLength)：6</p>
+</li>
+<li>
+<p>密码过期时间(ads-pwdMaxAge)：7776000（90天)</p>
+</li>
+<li>
+<p>过期后登录次数(ads-pwdGraceAuthNLimit):5</p>
+</li>
+<li>
+<p>过期提前提醒时间(ads-pwdExpireWarning):604800(一周)</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>修改管理员密码
+由于客户端直接修改管理员密码是会报错，所以可以采用如下两种方式修改：</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>方式一：通过ldapmodify命令修改<br></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ldapmodify -H ldap://localhost:10389 -D "uid=admin,ou=system" -x -w secret -f password.ldif</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+.password.ldif</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>dn: uid=admin,ou=system
+changetype: modify
+replace: userPassword
+userPassword: 密码</pre>
+</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>方式二：通过新建一个管理员，删除现有管理员变通修改</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_附录"><a class="anchor" href="#_附录"></a>4. 附录</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ldapmodify参数说明"><a class="anchor" href="#_ldapmodify参数说明"></a>4.1. ldapmodify参数说明</h3>
+<div class="listingblock">
+<div class="content">
+<pre>-x    简单认证
+-D    绑定服务器的DN
+-h    目录服务地址
+-w    绑定DN密码
+-f    使用ldif文件进行添加</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 19:45:10 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>
