@@ -23,7 +23,7 @@ if (toctitle != null) {
         } else {
           link.setAttribute("href", "index.html");
         }
-        link.innerHTML = "<span><i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i></span> 返回首页";
+        link.innerHTML = "<span><i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i></span> 返回";
         var block = document.createElement("div");
         block.setAttribute('class', 'back-action');
         block.appendChild(link);
@@ -33,8 +33,9 @@ if (toctitle != null) {
     }
 }
 
+var domain = document.domain?document.domain:"5i.work";
 var toctitle = document.getElementById('footer-text');
 if (toctitle != null) {
-    toctitle.insertAdjacentHTML("beforeend", " ©<a href='https://5i.work'>5i.work</a> | <a style='font-size:14px;' href='http://www.beian.miit.gov.cn/'>浙ICP备15019268号</a>")
+    toctitle.insertAdjacentHTML("beforeend", " ©<a href='/'>" + domain + "</a> | <a style='font-size:14px;' href='http://www.beian.miit.gov.cn/'>浙ICP备15019268号-1</a>")
 }
 
