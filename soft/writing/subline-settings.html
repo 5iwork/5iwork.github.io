@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Subline实践</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Subline实践</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_subline支持vi模式">1. Subline支持Vi模式</a></li>
+<li><a href="#_tab转换为空格">2. tab转换为空格</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_subline支持vi模式"><a class="anchor" href="#_subline支持vi模式"></a>1. Subline支持Vi模式</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>sublime支持原始的vi编辑器模式，但是默认的配置中是不开启vi支持的。</p>
+</div>
+<div class="paragraph">
+<p>在菜单栏中： Preferences &#8594; Settings 即可打开配置文件进行编辑，将 ignored_packages 项的[]里面"Vintage"内容注释掉或者删除掉，右侧个性化配置如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">{
+	"font_size": 10,
+	"ignored_packages": [""]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tab转换为空格"><a class="anchor" href="#_tab转换为空格"></a>2. tab转换为空格</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>菜单栏: Preferences &#8594; Settings – More &#8594; Syntax Specific – User</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">//把tab 转换成 空格
+"translate_tabs_to_spaces": true,
+//设置四个空格代替tab键
+"tab_size": 4,
+//设置为 true 时，会在保存时自动将tab符转换为空格，如果有需要，添加这行
+"expand_tabs_on_save": true</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-05 10:04:05 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

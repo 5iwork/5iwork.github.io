@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>RESTFul架构</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>RESTFul架构</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_建模语言">1. 建模语言</a></li>
+<li><a href="#_资源">2. 资源</a></li>
+<li><a href="#_异常">3. 异常</a></li>
+<li><a href="#_缓存">4. 缓存</a></li>
+<li><a href="#_安全">5. 安全</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_建模语言"><a class="anchor" href="#_建模语言"></a>1. 建模语言</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://raml.org/">RAML(RESTful API Modeling Language)</a></dt>
+<dd>
+<p>定义API接口，可以作为全后端接口契约，使用<a href="https://github.com/mulesoft/api-console">API Console</a>、<a href="https://github.com/raml2html/raml2html">RAML to HTML</a>生成API文档、构建mock server等，实现一次定义多处使用。参考<a href="https://www.tinymind.net.cn/articles/4287fc4edf8506">使用Raml构建RestfulAPI</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://blog.csdn.net/CL_YD/article/details/90240430" class="bare">https://blog.csdn.net/CL_YD/article/details/90240430</a></p>
+</li>
+<li>
+<p><a href="https://www.tinymind.net.cn/articles/4287fc4edf8506" class="bare">https://www.tinymind.net.cn/articles/4287fc4edf8506</a></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><a href="http://json-schema.org/">JSON Schema</a></dt>
+<dd>
+<p>定义JSON数据结构，可以校验JSON数据内容，生成相关文档、程序等。</p>
+<div class="ulist">
+<ul>
+<li>
+<p>根据JSON和对应的JSON Schema校验数据的正确性：http://json-schema-validator.herokuapp.com/</p>
+</li>
+<li>
+<p>根据JSON数据，生成对应的JSON Schema数据：https://jsonschema.net/#/editor</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_资源"><a class="anchor" href="#_资源"></a>2. 资源</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>&#8594; <a href="https://liming.pub/post/restful-resource-specification/">RESTful资源定义规范</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_异常"><a class="anchor" href="#_异常"></a>3. 异常</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>&#8594; <a href="https://liming.pub/post/api-problem-json/">RESTFul错误码定义规范</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_缓存"><a class="anchor" href="#_缓存"></a>4. 缓存</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>&#8594; <a href="https://liming.pub/post/restful-cache/">RESTFul缓存</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_安全"><a class="anchor" href="#_安全"></a>5. 安全</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>&#8594; <a href="https://liming.pub/post/jwt/">JWT</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

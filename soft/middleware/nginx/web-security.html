@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Web安全</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Web安全</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_缓慢攻击">1. 缓慢攻击</a>
+<ul class="sectlevel2">
+<li><a href="#_nginx">1.1. Nginx</a></li>
+<li><a href="#_nginxtengineopenresty">1.2. Nginx、Tengine、Openresty</a></li>
+<li><a href="#_websphere">1.3. WebSphere</a></li>
+<li><a href="#_weblogic">1.4. Weblogic</a></li>
+<li><a href="#_apache">1.5. Apache</a></li>
+<li><a href="#_ihs服务器">1.6. IHS服务器</a></li>
+<li><a href="#_f5负载均衡修复建议">1.7. F5负载均衡修复建议</a></li>
+<li><a href="#_iis服务器">1.8. IIS服务器</a></li>
+</ul>
+</li>
+<li><a href="#_http_header">2. HTTP HEADER</a>
+<ul class="sectlevel2">
+<li><a href="#_content_security_policy">2.1. Content-Security-Policy</a></li>
+<li><a href="#_x_content_type_options">2.2. X-Content-Type-Options</a></li>
+<li><a href="#_x_frame_options">2.3. X-Frame-Options</a></li>
+<li><a href="#_x_xss_protection">2.4. X-XSS-Protection</a></li>
+<li><a href="#_strict_transport_security">2.5. Strict-Transport-Security</a></li>
+<li><a href="#_referrer_policy">2.6. Referrer-Policy</a></li>
+<li><a href="#_x_permitted_cross_domain_policies">2.7. X-Permitted-Cross-Domain-Policies</a></li>
+<li><a href="#_x_download_options">2.8. X-Download-Options</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_缓慢攻击"><a class="anchor" href="#_缓慢攻击"></a>1. 缓慢攻击</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>缓慢的HTTP拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量HTTP请求攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
+</div>
+<div class="paragraph">
+<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。以Slow headers为例，Web应用在处理HTTP请求之前都要先接收完所有的HTTP头部，因为HTTP头部中包含了一些Web应用可能用到的重要的信息。攻击者利用这点，发起一个HTTP请求，一直不停的发送HTTP头部，消耗服务器的连接和内存资源。抓包数据可见，攻击客户端与服务器建立TCP连接后，每10秒才向服务器发送一个HTTP头部，而Web服务器在没接收到2个连续的
+时，会认为客户端没有发送完头部，而持续的等等客户端发送数据。如果恶意攻击者客户端持续建立这样的连接，那么服务器上可用的连接将一点一点被占满，从而导致拒绝服务。这种攻击类型称为慢速HTTP拒绝服务攻击。</p>
+</div>
+<div class="sect2">
+<h3 id="_nginx"><a class="anchor" href="#_nginx"></a>1.1. Nginx</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>通过调整$request_method，配置服务器接受http包的操作限制；</p>
+</li>
+<li>
+<p>在保证业务不受影响的前提下，调整client_max_body_size, client_body_buffer_size, client_header_buffer_size,large_client_header_buffersclient_body_timeout, client_header_timeout的值，必要时可以适当的增加；</p>
+</li>
+<li>
+<p>对于会话或者相同的ip地址，可以使用HttpLimitReqModule and HttpLimitZoneModule参数去限制请求量或者并发连接数；</p>
+</li>
+<li>
+<p>根据CPU和负载的大小，来配置worker_processes 和 worker_connections的值，公式是：max_clients = worker_processes * worker_connections。</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nginxtengineopenresty"><a class="anchor" href="#_nginxtengineopenresty"></a>1.2. Nginx、Tengine、Openresty</h3>
+<div class="listingblock">
+<div class="title">配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">client_max_body_size: 2m
+client_body_buffer_size</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>针对不同的Server其对慢速http拒绝服务攻击防范方法也不同，建议使用以下措施防范慢速http拒绝服务攻击：</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_websphere"><a class="anchor" href="#_websphere"></a>1.3. WebSphere</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>限制 HTTP 数据的大小
+在WebSphere Application Server 中进行如下设置：<br>
+任何单个 HTTP 头的默认最大大小为 32768 字节。可以将它设置为不同的值。
+HTTP 头的默认最大数量为 50。可以将它设置为不同的限制值。
+另一种常见的 DOS 攻击是发送一个请求，这个请求会导致一个长期运行的 GET 请求。WebSphere Application Server Plug-in 中的 ServerIOTimeoutRetry 属性可限制任何请求的重试数量。这可以降低这种长期运行的请求的影响。
+设置限制任何请求正文的最大大小。</p>
+</li>
+<li>
+<p>设置keepalive参数
+打开ibm http server安装目录，打开文件夹conf，打开文件httpd.conf,查找KeepAlive值，改ON为OFF,其默认为ON。
+这个值说明是否保持客户与HTTP SERVER的连接，如果设置为ON，则请求数到达MaxKeepAliveRequests设定值时请求将排队，导致响应变慢。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>详见参考链接：
+<a href="http://www.ibm.com/developerworks/cn/websphere/techjournal/1210_lansche/1210_lansche.html#new-step32" class="bare">http://www.ibm.com/developerworks/cn/websphere/techjournal/1210_lansche/1210_lansche.html#new-step32</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_weblogic"><a class="anchor" href="#_weblogic"></a>1.4. Weblogic</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>在配置管理界面中的协议&#8594;一般信息下设置 完成消息超时时间小于200</p>
+</li>
+<li>
+<p>在配置管理界面中的协议&#8594;HTTP下设置 POST 超时、持续时间、最大 POST 大小为安全值范围。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><a href="http://docs.oracle.com/cd/E12890_01/ales/docs32/integrateappenviron/configWLS.html#wp1101063" class="bare">http://docs.oracle.com/cd/E12890_01/ales/docs32/integrateappenviron/configWLS.html#wp1101063</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_apache"><a class="anchor" href="#_apache"></a>1.5. Apache</h3>
+<div class="paragraph">
+<p>建议使用mod_reqtimeout和mod_qos两个模块相互配合来防护。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>mod_reqtimeout用于控制每个连接上请求发送的速率。配置例如：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">#请求头部分，设置超时时间初始为10秒，并在收到客户端发送的数据后，每接收到500字节数据就将超时时间延长1秒，但最长不超过40秒。可以防护slowloris型的慢速攻击。
+RequestReadTimeout header=10-40,minrate=500
+#请求正文部分，设置超时时间初始为10秒，并在收到客户端发送的数据后，每接收到500字节数据就将超时时间延长1秒，但最长不超过40秒。可以防护slow message body型的慢速攻击。
+RequestReadTimeout body=10-40,minrate=500</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>需注意，对于HTTPS站点，需要把初始超时时间上调，比如调整到20秒。
+示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">LoadModule reqtimeout_module modules/mod_reqtimeout.so
+&lt;IfModule reqtimeout_module&gt;
+        RequestReadTimeout header=10-40,minrate=500 body=10-40,minrate=500
+&lt;/IfModule&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>mod_qos用于控制并发连接数。配置例如：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"># 当服务器并发连接数超过600时，关闭keepalive
+QS_SrvMaxConnClose 600
+# 限制每个源IP最大并发连接数为50
+QS_SrvMaxConnPerIP 50</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>这两个数值可以根据服务器的性能调整。
+更多关于qos_module配置参考：
+<a href="http://mod-qos.sourceforge.net/dos.html" class="bare">http://mod-qos.sourceforge.net/dos.html</a>
+示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">LoadModule qos_module modules/mod_qos.so
+&lt;IfModule qos_module&gt;
+QS_SrvMaxConnClose 600
+QS_SrvMaxConnPerIP 50
+&lt;/IfModule&gt;</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ihs服务器"><a class="anchor" href="#_ihs服务器"></a>1.6. IHS服务器</h3>
+<div class="paragraph">
+<p>请您先安装最新补丁包，然后启用mod_reqtimeout模块，在配置文件中加入：
+<code>LoadModule reqtimeout_module modules/mod_reqtimeout.so</code>
+为mod_reqtimeout模块添加配置：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">&lt;IfModule mod_reqtimeout.c&gt;
+RequestReadTimeout header=10-40,MinRate=500 body=10-40,MinRate=500
+&lt;/IfModule&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>对于HTTPS站点，建议 <code>header=20-40,MinRate=500</code>
+参见：http://www-01.ibm.com/support/docview.wss?uid=swg21652165</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_f5负载均衡修复建议"><a class="anchor" href="#_f5负载均衡修复建议"></a>1.7. F5负载均衡修复建议</h3>
+<div class="paragraph">
+<p>F5负载均衡设备有相应的防护模块，如无购买可参考附件中的详细配置过程。
+关于F5的慢速攻击防护配置，请参考以下链接：
+<a href="https://support.f5.com/kb/en-us/solutions/public/10000/200/sol10260.html" class="bare">https://support.f5.com/kb/en-us/solutions/public/10000/200/sol10260.html</a>
+<a href="https://devcentral.f5.com/articles/mitigating-slow-http-post-ddos-attacks-with-irules-ndash-follow-up" class="bare">https://devcentral.f5.com/articles/mitigating-slow-http-post-ddos-attacks-with-irules-ndash-follow-up</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_iis服务器"><a class="anchor" href="#_iis服务器"></a>1.8. IIS服务器</h3>
+<div class="paragraph">
+<p>IIS可配置相关网站的Web.config如下：
+1、WebLimits设置：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">&lt;configuration&gt;
+    &lt;system.applicationHost&gt;
+        &lt;webLimits connectionTimeout="00:00:30"
+        headerWaitTimeout="00:00:10"
+        dynamicIdleThreshold="150"
+        minBytesPerSecond="512"
+    /&gt;
+    &lt;/system.applicationHost&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>参考以下链接：
+<a href="https://docs.microsoft.com/en-us/iis/configuration/system.applicationhost/weblimits#configuration" class="bare">https://docs.microsoft.com/en-us/iis/configuration/system.applicationhost/weblimits#configuration</a></p>
+</div>
+<div class="paragraph">
+<p>2、headerLimits设置：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">&lt;configuration&gt;
+ &lt;system.webServer&gt;
+  &lt;security&gt;
+   &lt;requestFiltering&gt;
+    &lt;requestLimits&gt;
+     &lt;headerLimits&gt;
+     &lt;add header="Content-type" sizeLimit="100" /&gt;
+     &lt;/headerLimits&gt;
+    &lt;/requestLimits&gt;
+   &lt;/requestFiltering&gt;
+  &lt;/security&gt;
+ &lt;/system.webServer&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>参考以下链接：
+<a href="https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/requestlimits/headerlimits/" class="bare">https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/requestlimits/headerlimits/</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_http_header"><a class="anchor" href="#_http_header"></a>2. HTTP HEADER</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_content_security_policy"><a class="anchor" href="#_content_security_policy"></a>2.1. Content-Security-Policy</h3>
+<div class="paragraph">
+<p>HTTP 响应头Content-Security-Policy允许站点管理者控制用户代理能够为指定的页面加载哪些资源。除了少数例外情况，设置的政策主要涉及指定服务器的源和脚本结束点。
+Content-Security-Policy响应头的缺失使得目标URL更易遭受跨站脚本攻击。</p>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header Content-Security-Policy: "default-src 'self'" always;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_x_content_type_options"><a class="anchor" href="#_x_content_type_options"></a>2.2. X-Content-Type-Options</h3>
+<div class="paragraph">
+<p>X-Content-Type-Options HTTP 消息头相当于一个提示标志，被服务器用来提示客户端一定要遵循在 Content-Type 首部中对  MIME 类型 的设定，而不能对其进行修改。这就禁用了客户端的 MIME 类型嗅探行为，换句话说，也就是意味着网站管理员确定自己的设置没有问题。
+X-Content-Type-Options响应头的缺失使得目标URL更易遭受跨站脚本攻击。</p>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header X-Frame-Options: nosniff always;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_x_frame_options"><a class="anchor" href="#_x_frame_options"></a>2.3. X-Frame-Options</h3>
+<div class="paragraph">
+<p>点击劫持（ClickJacking）是一种视觉上的欺骗手段。攻击者使用一个透明的、不可见的iframe，覆盖在一个网页上，然后诱使用户在该网页上进行操作，此时用户将在不知情的情况下点击透明的iframe页面。通过调整iframe页面的位置，可以诱使用户恰好点击在iframe页面的一些功能性按钮上。
+HTTP 响应头信息中的X-Frame-Options，可以指示浏览器是否应该加载一个 iframe 中的页面。如果服务器响应头信息中没有X-Frame-Options，则该网站存在ClickJacking攻击风险。网站可以通过设置 X-Frame-Options 阻止站点内的页面被其他页面嵌入从而防止点击劫持。</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">修改web服务器配置，添加X-Frame-Options响应头。赋值有如下三种</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>DENY：不能被嵌入到任何iframe或者frame中。</p>
+</li>
+<li>
+<p>SAMEORIGIN:页面只能被本站页面嵌入到iframe或者frame中。</p>
+</li>
+<li>
+<p>ALLOW-FROM uri：只能被嵌入到指定域名的框架中。</p>
+</li>
+</ol>
+</div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header X-Frame-Options: SAMEORIGIN always;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_x_xss_protection"><a class="anchor" href="#_x_xss_protection"></a>2.4. X-XSS-Protection</h3>
+<div class="paragraph">
+<p>HTTP X-XSS-Protection 响应头是 Internet Explorer，Chrome 和 Safari 的一个特性，当检测到跨站脚本攻击 (XSS)时，浏览器将停止加载页面。
+X-XSS-Protection响应头的缺失使得目标URL更易遭受跨站脚本攻击。</p>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header X-XSS-Protection: "1; mode=block" always;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_strict_transport_security"><a class="anchor" href="#_strict_transport_security"></a>2.5. Strict-Transport-Security</h3>
+<div class="paragraph">
+<p>Web 服务器对于 HTTP 请求的响应头中缺少 Strict-Transport-Security，这将导致浏览器提供的安全特性失效。 当 Web 服务器的 HTTP 头中包含 Strict-Transport-Security 头时，浏览器将持续使用 HTTPS 来访问 Web 站点，可以用来对抗协议降级攻击和 Cookie 劫持攻击。
+其可选的值有::
+- max-age=SECONDS，表示本次命令在未来的生效时间；
+- includeSubDomains可以用来指定是否对子域名生效。</p>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header  Strict-Transport-Security: max-age=31536000; includeSubDomains always;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_referrer_policy"><a class="anchor" href="#_referrer_policy"></a>2.6. Referrer-Policy</h3>
+<div class="paragraph">
+<p>Web 服务器对于 HTTP 请求的响应头中缺少 Referer-Policy，这将导致浏览器提供的安全特性失效。 当用户在浏览器上点击一个链接时，会产生一个 HTTP 请求，用于获取新的页面内容，而在该请求的报头中，会包含一个 Referrer，用以指定该请求是从哪个页面跳转页来的，常被用于分析用户来源等信息。但是也成为了一个不安全的因素，所以就有了 Referer-Policy，用于过滤 Referrer 报头内容。
+其可选的项有::
+- no-referrer no-referrer-when-downgrade origin origin-when-cross-origin same-origin strict-origin strict-origin-when-cross-origin unsafe-url</p>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header Referrer-Policy "origin-when-crossorigin" always;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_x_permitted_cross_domain_policies"><a class="anchor" href="#_x_permitted_cross_domain_policies"></a>2.7. X-Permitted-Cross-Domain-Policies</h3>
+<div class="paragraph">
+<p>Web 服务器对于 HTTP 请求的响应头中缺少 X-Permitted-Cross-Domain-Policies，这将导致浏览器提供的安全特性失效。 当一些在线的 Web Flash 需要加载其他域的内容时，很多 Web 会通过设置一个 crossdomain.xml 文件的方式来控制其跨域方式。很有可能有些开发者并没有修改 crossdomain.xml 文件的权限，但是又有和跨域的 Flash 共享数据的需求，这时候可以通过设置 X-Permitted-Cross-Domain-Policies 头的方式来替代 crossdomain.xml 文件。
+其可选的项有::
+none master-only by-content-type by-ftp-filename all</p>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header X-Permitted-Cross-Domain-Policies master-only always;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_x_download_options"><a class="anchor" href="#_x_download_options"></a>2.8. X-Download-Options</h3>
+<div class="paragraph">
+<p>Web 服务器对于 HTTP 请求的响应头中缺少 X-Download-Options，这将导致浏览器提供的安全特性失效。</p>
+</div>
+<div class="listingblock">
+<div class="title">Nginx、Tengine、Openresty等配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">add_header X-Download-Options: noopen always;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-05 09:49:09 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

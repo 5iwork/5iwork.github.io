@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Untitled</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. 自动化开发流程软件清单</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">软件</th>
+<th class="tableblock halign-left valign-top">功能（这里只列举公司内用到的功能）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gitlab</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gitlab ci：提代码自动构建 gitlab page：基于gitlab</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jira</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">工单管理，需求、bug等</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">confluence</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">知识库，文档管理</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">crowd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jira和confluence的用户源</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ApacheDS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ldap服务器</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">docker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s的运行时；持久化组件裸docker部署；dive：docker镜像查看</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kuboard：界面 rancher：界面+k8s集群管理 traefik：ingress容器，域名服务 helm：k8s配置文件模板引擎 openvpn：通过vpn方式直接连k8s内网</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jenkins</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jenkins pipeline、jenkins shared library，封装项目构建的流水线</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nexus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maven私服（Java） npm私服（JavaScript） docker镜像私服（Docker、Kubernetes） helm chart私服（Helm） yum代理加速（Centos） pypi代理加速（Python）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sonar</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">自动化测试代码覆盖率</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">minio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">类似ftp的文件服务，amazon s3协议；自动备份文件存储服务器</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nextcloud</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">私有网盘</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ELK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">elasticsearch filebeat kibana 日志服务</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Skywalking</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">微服务链路监控</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">vsftpd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ftp服务</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dnsmasq</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">内网dns服务，主要为了k8s集群的主机名相互识别</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nginx</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">各种反向代理服务</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ntp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">主机时间同步</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jumpserver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">linux主机管理</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

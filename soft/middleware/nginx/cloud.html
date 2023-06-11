@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Nginx配置</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Nginx配置</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_前后端分离nginx配置">1. 前后端分离nginx配置</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_前后端分离nginx配置"><a class="anchor" href="#_前后端分离nginx配置"></a>1. 前后端分离nginx配置</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">/etc/nginx/conf.d/cloud.conf(<a href="inc/cloud.conf">下载</a>)</div>
+<div class="content">
+<pre>upstream ms-maingateway {
+    server  localhost:8765; <i class="conum" data-value="1"></i><b>(1)</b>
+}
+upstream ms-websocket {
+    server  localhost:8091; <i class="conum" data-value="2"></i><b>(2)</b>
+}
+server {
+    listen 80; <i class="conum" data-value="3"></i><b>(3)</b>
+    server_name localhost; <i class="conum" data-value="4"></i><b>(4)</b>
+    root /var/www/main-frontend; <i class="conum" data-value="5"></i><b>(5)</b>
+    index index.html index.htm;
+
+    gzip on;
+    gzip_min_length 10k;
+    gzip_comp_level 2;
+    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/xml text/javascript application/json application/hal+json font/ttf font/otf image/svg+xml;
+    gzip_vary on;
+    gzip_http_version 1.0;
+
+    location = / {}
+    location = /index.html {}
+    location ^~ /static/ {
+        access_log   off;
+    }
+    location ^~ /assets/ {
+        access_log   off;
+    }
+    location ~* \.(gif|jpg|jpeg|png|css|js|ico|svg)$ {
+        access_log   off;
+    }
+    location ~* \.(txt|log)$ {
+        access_log   off;
+        root /tmp;
+    }
+    location = /notification/batchSocket {
+        proxy_pass              http://ms-websocket;
+        proxy_redirect          off;
+        proxy_set_header        Host $http_host;
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        add_header              X-Frame-Options "SAMEORIGIN";
+        proxy_http_version      1.1;
+        proxy_set_header        Upgrade $http_upgrade;
+        proxy_set_header        Connection "upgrade";
+        proxy_next_upstream     error timeout invalid_header http_500 http_502 http_503 http_504;
+        proxy_connect_timeout   60;
+        proxy_send_timeout      60;
+        proxy_read_timeout      60;
+        access_log              off;
+    }
+
+    location / {
+        proxy_pass http://ms-maingateway;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        client_max_body_size 1000m;
+    }
+}</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>网关服务器地址，如果是集群可配置多条: <code>server 192.168.1.2:8081 weight=5;</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>WebSocket服务器地址，对应本系统为通知中心微服务的地址（不经过网关）</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>对外暴露端口</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>对外暴露域名</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>前端页面html目录，将html.zip包加压到该目录，解压后该目录下应该有个index.html</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-12 17:22:32 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

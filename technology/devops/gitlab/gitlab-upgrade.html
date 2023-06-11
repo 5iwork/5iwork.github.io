@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>gitlab升级</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>gitlab升级</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_启动低版本">1. 启动低版本</a></li>
+<li><a href="#_腾讯备份">2. 腾讯备份</a></li>
+<li><a href="#_ce升级到ee">3. CE升级到EE</a></li>
+<li><a href="#_升级到最新">4. 升级到最新</a></li>
+<li><a href="#_备份">5. 备份</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_启动低版本"><a class="anchor" href="#_启动低版本"></a>1. 启动低版本</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>启动9.2.7版本<br></p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>docker run -d \
+-p 8443:443 \
+-p 8000:80 \
+-p 2222:22 \
+-v /home/gitlab/data:/data \
+-v /home/gitlab/backups:/var/opt/gitlab/backups \
+--name gitlab-ce \
+polinux/gitlab-ce:9.2.7-ce.0</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>上传备份文件进行恢复<br></p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>#进入docker实例
+docker exec -it gitlab-ce bash
+
+#加载备份文件
+cd /data
+cp 1640124462_2021_12_22_9.2.7_gitlab_backup.tar /var/opt/gitlab/backups/
+#恢复
+gitlab-ctl stop unicorn
+gitlab-ctl stop sidekiq
+gitlab-rake gitlab:backup:restore BACKUP=1640124462_2021_12_22_9.2.7
+gitlab-ctl restart</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>升级<br>
+.deb</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>dpkg -i gitlab-ce_9.5.10-ce.0_amd64.deb
+dpkg -i gitlab-ce_10.8.7-ce.0_amd64.deb
+dpkg -i gitlab-ce_11.11.8-ce.0_amd64.deb</pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">CentOS</dt>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs"># 准备包
+cp -rf /mnt/sharefunds/soft/gitlab/rpm ~/
+# 安装
+cd ~/rpm
+rpm -Uvh gitlab-ce-9.2.7-ce.0.el7.x86_64.rpm
+gitlab-ctl reconfigure
+
+# 恢复
+
+# 上传备份包到/var/opt/gitlab/backups/
+# scp /home/data/gitlab/latest/*.tar backup2:/var/opt/gitlab/backups/
+# scp /etc/gitlab/gitlab.rb backup2:/etc/gitlab/
+# scp /usr/local/bin/gitlab_backup.sh backup2:/usr/local/bin/gitlab_backup.sh
+
+chown git:git /var/opt/gitlab/backups/*
+gitlab-ctl stop unicorn
+gitlab-ctl stop sidekiq
+gitlab-rake gitlab:backup:restore BACKUP=1640210834_2021_12_23_9.2.7
+
+# 升级
+rpm -Uvh gitlab-ce-9.5.10-ce.0.el7.x86_64.rpm
+yum install policycoreutils-python -y
+rpm -Uvh gitlab-ce-10.8.7-ce.0.el7.x86_64.rpm
+rpm -Uvh gitlab-ce-11.11.8-ce.0.el7.x86_64.rpm
+rpm -Uvh gitlab-ce-12.0.12-ce.0.el7.x86_64.rpm
+rpm -Uvh gitlab-ce-12.1.17-ce.0.el7.x86_64.rpm
+rpm -Uvh gitlab-ce-12.10.14-ce.0.el7.x86_64.rpm
+rpm -Uvh gitlab-ce-13.0.14-ce.0.el7.x86_64.rpm
+rpm -Uvh gitlab-ce-13.1.11-ce.0.el7.x86_64.rpm
+rpm -Uvh gitlab-ce-13.8.8-ce.0.el7.x86_64.rpm</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+8.11.Z &#8594; 8.12.0 &#8594; 8.17.7 &#8594; 9.5.10 &#8594; 10.8.7 &#8594; 11.11.8 &#8594; 12.0.12 &#8594; 12.1.17 &#8594; 12.10.14 &#8594; 13.0.14 &#8594; 13.1.11 &#8594; 13.8.8 &#8594; latest 13.12.Z &#8594; latest 14.0.Z &#8594; latest 14.1.Z &#8594; latest 14.Y.Z
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_腾讯备份"><a class="anchor" href="#_腾讯备份"></a>2. 腾讯备份</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>yum install python3
+pip3 install coscmd
+coscmd config -a xxxx -s yyyy -b backups-1111111 -r ap-shanghai
+coscmd -h</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ce升级到ee"><a class="anchor" href="#_ce升级到ee"></a>3. CE升级到EE</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://docs.gitlab.com/ee/update/package/convert_to_ee.html" class="bare">https://docs.gitlab.com/ee/update/package/convert_to_ee.html</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>curl --silent "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh" | sudo bash
+yum install gitlab-ee-13.8.8-ee.0.el7.x86_64
+gitlab-ctl reconfigure</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_升级到最新"><a class="anchor" href="#_升级到最新"></a>4. 升级到最新</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre># Ubuntu/Debian
+sudo apt update &amp;&amp; sudo apt install gitlab-ee
+
+# RHEL/CentOS 6 and 7
+sudo yum install gitlab-ee
+
+# RHEL/CentOS 8
+sudo dnf install gitlab-ee
+
+# SUSE
+sudo zypper install gitlab-ee</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_备份"><a class="anchor" href="#_备份"></a>5. 备份</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>echo "`date '+%FT%T'`开始远程备份..."
+#rsync -rP -e ssh /var/opt/gitlab/backups/ backup:/home/data/gitlab
+
+rm /home/data/gitlab/latest/*.tar
+latest_file=`ls -l /var/opt/gitlab/backups/ | tail -n 1 | awk '{print $9}'`
+echo $latest_file
+ln -s /var/opt/gitlab/backups/$latest_file /home/data/gitlab/latest/$latest_file
+month=`date '+%Y/%m'`
+/usr/local/bin/coscmd upload /var/opt/gitlab/backups/$latest_file $month/$latest_file
+echo "`date '+%FT%T'`远程备份完成。备份文件：$month/$latest_file"</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 19:41:18 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

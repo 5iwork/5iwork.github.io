@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>WebSocket集群</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>WebSocket集群</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_后端主动推送">1. 后端主动推送</a></li>
+<li><a href="#_前端心跳轮询">2. 前端心跳轮询</a></li>
+<li><a href="#_代码示例">3. 代码示例</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_后端主动推送"><a class="anchor" href="#_后端主动推送"></a>1. 后端主动推送</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>主动推送时随机选择一台服务器A发起推送，如果用户甲是和服务器B建立连接的，那么服务器A发出的推送就到不了前端。</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">解决方案</dt>
+<dd>
+<p>Nginx配置负载均衡，后台微服务主动推送时不做负载分发，而是所有的服务器都推送</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_前端心跳轮询"><a class="anchor" href="#_前端心跳轮询"></a>2. 前端心跳轮询</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>由于前端和后端是长连接，由于前端隔一分钟会发送一次请求，来确认长连接有没有断，断了的话会进行重连，如果请求被分发到了另一台服务器上的话，这样消息就会发送失败，前台就不能确定是请求分发的问题还是真的是长连接断了。</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">解决方案</dt>
+<dd>
+<p>Nginx固定IP路由</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_代码示例"><a class="anchor" href="#_代码示例"></a>3. 代码示例</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Nginx配置</p>
+<div class="listingblock">
+<div class="title">web.conf</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">upstream ms-websocket {
+    server  192.168.1.155:8091;
+    server  192.168.1.156:8091;
+    ip_hash;
+}
+location = /notification/socket {
+        proxy_pass              http://ms-websocket;
+        proxy_redirect          off;
+        proxy_set_header        Host $server_name:$server_port;
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        add_header              X-Frame-Options "SAMEORIGIN";
+        proxy_http_version      1.1;
+        proxy_set_header        Upgrade $http_upgrade;
+        proxy_set_header        Connection "upgrade";
+        proxy_next_upstream     error timeout invalid_header http_500 http_502 http_503 http_504;
+        proxy_connect_timeout   60;
+        proxy_send_timeout      60;
+        proxy_read_timeout      60;
+        access_log              off;
+    }</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>java代码</p>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">producer.java</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Component("webSocketKafkaProducer")
+@Slf4j
+public class WebSocketKafkaProducer {
+
+    @Autowired
+    private KafkaTemplate&lt;String, Object&gt; kafkaTemplate;
+
+    public void sendMessage(String content) {
+        log.debug("发送消息：{}",content);
+        kafkaTemplate.send("websocket_push", content);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">cosumer.java</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Component
+@Slf4j
+public class WebSocketKafkaConsumer {
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
+
+    @KafkaListener(
+            topics = {"websocket_push"}
+            , groupId = "${spring.cloud.client.ip-address}.${server.port}" //websocket每个实例使用不同的group-id，防止漏掉非当前实例的连接用户
+    )
+    public void websocket(String content){
+        log.debug("监听到消息：{}", content);
+        //具体发送websocket
+        String destination = "/websocket/listener" + "/" +"username";
+        log.info("向监听地址为[{}]发送消息：{}", destination, content);
+        this.messagingTemplate.convertAndSend(destination, content);
+    }
+
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 19:30:21 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

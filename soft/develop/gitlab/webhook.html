@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>WebHook</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>WebHook</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_配置">1. 配置</a></li>
+<li><a href="#_启动">2. 启动</a></li>
+<li><a href="#_客户端触发">3. 客户端触发</a></li>
+<li><a href="#_发布日志">4. 发布日志</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/adnanh/webhook/" class="bare">https://github.com/adnanh/webhook/</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_配置"><a class="anchor" href="#_配置"></a>1. 配置</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">/etc/webhook/hooks.yml</div>
+<div class="content">
+<pre>- id: java
+  execute-command: java_redeploy.sh
+  command-working-directory: /usr/local/bin
+  response-message: 触发成功，重新部署java应用!
+  response-headers:
+  - name: Access-Control-Allow-Origin
+    value: '*'
+  pass-arguments-to-command:
+  - source: url
+    name: group
+  - source: url
+    name: application
+  - source: url
+    name: slug
+- id: web
+  execute-command: web_redeploy.sh
+  command-working-directory: /usr/local/bin
+  response-message: 触发成功，重新部署Web应用!
+  response-headers:
+  - name: Access-Control-Allow-Origin
+    value: '*'
+  pass-arguments-to-command:
+  - source: url
+    name: group
+  - source: url
+    name: application
+  - source: url
+    name: slug</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">/usr/local/bin/java_redeploy.sh</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">#!/usr/bin/env bash
+# redirect stdout/stderr to a file
+# set -e
+samba_base_path="/mnt/sharefunds/package"
+#######
+exec >> /tmp/webhook.log 2>&1
+pwd
+date +%FT%T
+if [ $# -ne 3 ]
+then
+    echo "参数个数应该为3!"
+    exit 1
+fi
+if test -z "$1" || test -z "$2" || test -z "$3"
+then
+    echo "入参非法：[$1][$2][$3]"
+    exit 1
+fi
+groupName=$1
+applicationName=$2
+slugName=$3
+deploy_path="/var/www/$groupName/${applicationName}"
+if [ ! -d "$deploy_path" ]
+then
+    mkdir -p $deploy_path
+fi
+samba_path="${samba_base_path}/$groupName/$applicationName/$slugName"
+cp $samba_path/$applicationName.jar $deploy_path
+cd $deploy_path
+echo "restart ${applicationName}"
+#java方式
+ps -ef | grep ${applicationName}.jar | grep -v grep | cut -c 9-15 | xargs kill -s 9
+nohup java -Xmx300m -jar ${applicationName}.jar >/dev/null 2>&1 &
+ps -ef | grep ${applicationName}.jar
+#docker方式
+docker ps |grep ${applicationName/-/_}|awk -FS '  ' '{print $1,$8,$9,$10}'
+docker ps |grep ${applicationName/-/_}|awk '{print $1}'|xargs docker restart
+docker ps |grep ${applicationName/-/_}|awk '{print $1,$8,$9,$10}'
+echo "启动完成!"
+exit 0</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">/usr/local/bin/web_redeploy.sh</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">#!/usr/bin/env bash
+# redirect stdout/stderr to a file
+samba_base_path="/mnt/sharefunds/package"
+#######
+set -e
+exec >> /tmp/webhook.log 2>&1
+pwd
+date +%FT%T
+if [ $# -ne 3 ]
+then
+      echo "参数个数应该为3!"
+      exit 1
+fi
+groupName=$1
+applicationName=$2
+slugName=$3
+deploy_path="/var/www/$groupName/${applicationName}"
+tarFileName=$applicationName.tgz
+if [ ! -d "$deploy_path" ]
+      then
+              mkdir -p $deploy_path
+      fi
+samba_path="${samba_base_path}/$groupName/$applicationName/$slugName"
+cp $samba_path/$tarFileName $deploy_path
+cd $deploy_path
+tar -zxvf $deploy_path/$tarFileName
+echo "reload ${deploy_path}/dist/${application}"
+echo "加载完成!"
+exit 0</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_启动"><a class="anchor" href="#_启动"></a>2. 启动</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">nohup webhook -hooks /etc/webhook/hooks.yaml > /tmp/webhook.log 2>&1 &</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">/etc/systemd/system/webhook.service</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">[Unit]
+Description=webhook
+After=network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/webhook.pid
+ExecStart=/bin/sh -c "nohup webhook -hooks /etc/webhook/hooks.yaml &amp; echo $! &gt; /var/run/webhook.pid"
+ExecReload=/bin/sh -c "/bin/kill -s HUP $(/bin/cat /var/run/webhook.pid)"
+ExecStop=/bin/sh -c "/bin/kill -s TERM $(/bin/cat /var/run/webhook.pid)"
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_客户端触发"><a class="anchor" href="#_客户端触发"></a>3. 客户端触发</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">curl http://127.0.0.1:9000/hooks/java?group=frame&amp;application=demo&amp;slug=master</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_发布日志"><a class="anchor" href="#_发布日志"></a>4. 发布日志</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">java打包</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">if [ $# -ne 3 ]
+then
+      echo "arguments error!"
+      exit 1
+fi
+samba_base_path="/mnt/sharefunds/package"
+public_site="http://192.168.1.160"
+deploy_ip=192.168.1.1
+#######
+groupName=$1
+applicationName=$2
+branchName=$3
+
+mvn clean package -Dmaven.test.skip=true
+deploy_path="/var/www/$groupName/$applicationName"
+if [ ! -f "target/$applicationName.jar" ]
+then
+   echo "maven install failed"
+   exit 1
+fi
+if [ ! -d "$deploy_path" ]
+then
+   mkdir -p $deploy_path
+fi
+
+samba_relation_path="$groupName/$applicationName/$branchName"
+samba_path="${samba_base_path}/${samba_relation_path}"
+if [ ! -d "$samba_path" ]
+then
+   mkdir -p $samba_path
+fi
+cp -f target/$applicationName.jar $samba_path/
+echo "发布包路径：$samba_path/$application"
+
+#生成该微服务的索引
+groupDir="$samba_base_path/$groupName"
+jarSize=`ls -sh target/$applicationName.jar| awk '{print $1}'`
+echo "* ${applicationName}^${groupName}^*${branchName}* ~`date -Isecond`~ link:$samba_relation_path/$applicationName.jar[下载(${jarSize})] | link:http://{deploy_ip}:9000/hooks/java?group=$groupName&application=$applicationName&slug=$branchName[部署到{deploy_ip}] | link:http://{deploy_ip2}:9000/hooks/java?group=$groupName&application=$applicationName&slug=$branchName[部署到{deploy_ip2}]" > $samba_path/index.adoc
+echo "" > $groupDir/$applicationName.adoc
+for file in `ls $groupDir/$applicationName`
+do
+  if [ ! -f "$groupDir/$applicationName/$file/index.adoc" ];then
+    echo "* ${applicationName}^${groupName}^*${file}* link:$groupName/$applicationName/$file/$applicationName.jar[下载] | link:http://{deploy_ip}:9000/hooks/java?group=$groupName&application=$applicationName&slug=$file[部署到{deploy_ip}]" > $groupDir/$applicationName/$file/index.adoc
+  fi
+  echo "include::$applicationName/$file/index.adoc[]" >> $groupDir/$applicationName.adoc
+done
+
+publish_content="* *${applicationName}*^${groupName}^_${branchName}_ ~`date -Isecond`~ link:$samba_relation_path/$applicationName.jar[下载(${jarSize})] | link:http://{deploy_ip}:9000/hooks/java?group=${groupName}&application=${applicationName}&slug=${branchName}[部署到{deploy_ip}] | link:http://{deploy_ip2}:9000/hooks/java?group=$groupName&application=$applicationName&slug=$branchName[部署到{deploy_ip2}]"
+sed -i "2i$publish_content" "$samba_base_path/piplines.adoc"
+head -50 "$samba_base_path/piplines.adoc" > "$samba_base_path/piplines1.adoc"
+mv -f $samba_base_path/piplines1.adoc $samba_base_path/piplines.adoc
+#asciidoctor -a nofooter -a sectnums -a icons=font -a toclevels=6 -a toc-title=导航 -a sectanchors -a idprefix! -D "$samba_base_path" "$samba_base_path/index.adoc"
+adoc "$samba_base_path" "$samba_base_path/index.adoc"
+echo "部署请访问：${public_site}"
+
+echo "自动部署：http://$deploy_ip:9000/hooks/java?group=${groupName}&application=${applicationName}&slug=${branchName}"
+curl "http://$deploy_ip:9000/hooks/java?group=${groupName}&application=${applicationName}&slug=${branchName}"</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">web打包</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">#生成产品化前端的索引
+groupDir="$samba_base_path/$groupName"
+echo "* ${applicationName}^${groupName}^*${branchName}* ~`date -Isecond`~ link:$samba_relation_path/$applicationName.tgz[下载] | link:http://{deploy_ip}:9000/hooks/web?group=$groupName&application=$applicationName&slug=$branchName[部署到{deploy_ip}] | link:http://{deploy_ip2}:9000/hooks/web?group=$groupName&application=$applicationName&slug=$branchName[部署到{deploy_ip2}]" > $samba_path/index.adoc
+echo "" > $groupDir/$applicationName.adoc
+for file in `ls $groupDir/$applicationName`
+do
+  if [ ! -f "$groupDir/$applicationName/$file/index.adoc" ];then
+    echo "* ${applicationName}^${groupName}^*${file}* link:$groupName/$applicationName/$file/$applicationName.tgz[下载] link:http://{deploy_ip}:9000/hooks/web?group=$groupName&application=$applicationName&slug=$branchName[部署到{deploy_ip}]" > $groupDir/$applicationName/$file/index.adoc
+  fi
+  echo "include::$applicationName/$file/index.adoc[]" >> $groupDir/$applicationName.adoc
+done
+
+publish_content="* *${applicationName}*^${groupName}^_${branchName}_ ~`date -Isecond`~ link:$samba_relation_path/$applicationName.tgz[微服务模式下载] | link:http://{deploy_ip}:9000/hooks/web?group=${groupName}&application=${applicationName}&slug=${branchName}[部署到{deploy_ip}]| link:http://{deploy_ip2}:9000/hooks/web?group=$groupName&application=$applicationName&slug=$branchName[部署到{deploy_ip2}]"
+sed -i "2i$publish_content" "$samba_base_path/piplines.adoc"
+head -50 "$samba_base_path/piplines.adoc" > "$samba_base_path/piplines1.adoc"
+mv -f $samba_base_path/piplines1.adoc $samba_base_path/piplines.adoc
+#asciidoctor -a nofooter -a sectnums -a icons=font -a toclevels=6 -a toc-title=导航 -a sectanchors -a idprefix! -D "$samba_base_path" "$samba_base_path/index.adoc"
+adoc "$samba_base_path" "$samba_base_path/index.adoc"
+echo "部署请访问：http://192.168.1.160"</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">前端打包</div>
+<div class="content">
+<pre>#生成前端的索引
+groupDir="$samba_base_path/$groupName"
+echo "* ${applicationName}^${groupName}^*${branchName}* ~`date -Isecond`~ link:$samba_relation_path/$applicationName.tgz[微服务模式下载] | link:$samba_relation_path/$pyTarFileName[浦银项目下载] | link:$samba_relation_path/$stTarFileName[单体模式下载] | link:http://{deploy_ip}:9000/hooks/web?group=$groupName&amp;application=$applicationName&amp;slug=$branchName[部署到{deploy_ip}]| link:http://{deploy_ip2}:9000/hooks/web?group=$groupName&amp;application=$applicationName&amp;slug=$branchName[部署到{deploy_ip2}]" &gt; $samba_path/index.adoc
+echo "" &gt; $groupDir/index.adoc
+for file in `ls $groupDir/$applicationName`
+do
+  if [ ! -f "$groupDir/$applicationName/$file/index.adoc" ];then
+    echo "* ${applicationName}^${groupName}^*${file}* link:$groupName/$applicationName/$file/$applicationName.tgz[下载] | link:http://{deploy_ip}:9000/hooks/web?group=$groupName&amp;application=$applicationName&amp;slug=$branchName[部署到{deploy_ip}]| link:http://{deploy_ip2}:9000/hooks/web?group=$groupName&amp;application=$applicationName&amp;slug=$branchName[部署到{deploy_ip2}]" &gt; $groupDir/$applicationName/$file/index.adoc
+  fi
+  echo "include::$applicationName/$file/index.adoc[]" &gt;&gt; $groupDir/index.adoc
+done
+
+publish_content="* *${applicationName}*^${groupName}^_${branchName}_ ~`date -Isecond`~ link:$samba_relation_path/$applicationName.tgz[微服务模式下载] | link:$samba_relation_path/$pyTarFileName[浦银项目下载] | link:$samba_relation_path/$stTarFileName[单体模式下载] | link:http://{deploy_ip}:9000/hooks/web?group=${groupName}&amp;application=${applicationName}&amp;slug=${branchName}[部署到{deploy_ip}]| link:http://{deploy_ip2}:9000/hooks/web?group=$groupName&amp;application=$applicationName&amp;slug=$branchName[部署到{deploy_ip2}]"
+sed -i "2i$publish_content" "$samba_base_path/piplines.adoc"
+head -50 "$samba_base_path/piplines.adoc" &gt; "$samba_base_path/piplines1.adoc"
+mv -f $samba_base_path/piplines1.adoc $samba_base_path/piplines.adoc
+#asciidoctor -a nofooter -D "$samba_base_path" "$samba_base_path/index.adoc"
+adoc "$samba_base_path" "$samba_base_path/index.adoc"
+echo "部署请访问：http://192.168.1.160"</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">SQL打包</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">if [ $# -ne 3 ]
+then
+      echo "arguments error!"
+      exit 1
+fi
+pwd
+
+samba_base_path="/mnt/sharefunds/package"
+public_site="http://192.168.1.160"
+#######
+groupName=$1
+applicationName=$2
+branchName=$3
+
+samba_relation_path="$groupName/$applicationName/$branchName"
+samba_path="${samba_base_path}/${samba_relation_path}"
+
+# 微服务
+msMode="microservice"
+sh release.sh -p product
+tar -zvcf ${applicationName}-${msMode}.tgz target
+
+# 单体
+stMode="standalone"
+sh release.sh -p $stMode
+tar -zvcf ${applicationName}-${stMode}.tgz target
+
+# 永赢
+mwfMode="maxwealthfund"
+sh release.sh -p $mwfMode
+tar -zvcf ${applicationName}-${mwfMode}.tgz target
+
+if [ ! -d $samba_path ];then
+  mkdir -p $samba_path
+fi
+cp -f ${applicationName}-${msMode}.tgz $samba_path
+cp -f ${applicationName}-${stMode}.tgz $samba_path
+cp -f ${applicationName}-${mwfMode}.tgz $samba_path
+
+linkContent="link:$samba_relation_path/$applicationName-${msMode}.tgz[微服务模式下载] | link:$samba_relation_path/${applicationName}-${stMode}.tgz[单体模式下载] | link:$samba_relation_path/${applicationName}-${mwfMode}.tgz[永赢项目下载]"
+
+#生成SQL的索引
+groupDir="$samba_base_path/$groupName"
+echo "* ${applicationName}^${groupName}^*${branchName}* ~`date -Isecond`~ $linkContent" > $samba_path/index.adoc
+echo "" > $groupDir/index.adoc
+for file in `ls $groupDir/$applicationName`
+do
+  echo "include::$applicationName/$file/index.adoc[]" >> $groupDir/index.adoc
+done
+
+publish_content="* *${applicationName}*^${groupName}^_${branchName}_ ~`date -Isecond`~ $linkContent"
+sed -i "2i$publish_content" "$samba_base_path/piplines.adoc"
+head -50 "$samba_base_path/piplines.adoc" > "$samba_base_path/piplines1.adoc"
+mv -f $samba_base_path/piplines1.adoc $samba_base_path/piplines.adoc
+asciidoctor -a nofooter -D "$samba_base_path" "$samba_base_path/index.adoc"
+echo "发布站点：${public_site}"</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">打包发布</div>
+<div class="content">
+<pre>#!/bin/bash
+if [ $# -ne 1 ]
+then
+      echo "arguments error!"
+      exit 1
+fi
+targetDir="../package"
+versionName="bmp-ms-allinone-1.3.0-20210210-beta$1"
+programName="bmp-ms-program-1.3.0-20210210-bata$1"
+relationFile="allinone/${versionName}.tar.gz"
+programRelationFile="allinone/${programName}.tar.gz"
+tarfile="${targetDir}/${relationFile}"
+if [ -f "$tarfile" ];then
+      echo "$tarfile 已存在，请按回车键确认或CTRL+C退出！"
+      read
+fi
+tar -zcvf $tarfile bmp-ms-allinone-1.3.0-20210210
+tarSize=`ls -sh ${tarfile}| awk '{print $1}'`
+tar -zcvf ${targetDir}/${programRelationFile} bmp-ms-allinone-1.3.0-20210210/bmp-program
+programTarSize=`ls -sh ${targetDir}/${programRelationFile}| awk '{print $1}'`
+echo "* ${versionName} ~`date -Isecond`~ link:${relationFile}[全量安装包下载(${tarSize})] | link:${programRelationFile}[程序包下载(${programTarSize})]" &gt;&gt; ../package/allinone/index.adoc</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-12 19:22:50 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

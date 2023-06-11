@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>gitlab集成LDAP</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article">
+<div id="header">
+<h1>gitlab集成LDAP</h1>
+</div>
+<div id="content">
+<div class="listingblock">
+<div class="title">/etc/gitlab/gitlab.rb</div>
+<div class="content">
+<pre>gitlab_rails['ldap_enabled'] = true
+gitlab_rails['prevent_ldap_sign_in'] = false
+gitlab_rails['ldap_servers'] = {
+'main' =&gt; {
+  'label' =&gt; '域账号',
+  'host' =&gt;  '192.168.1.1',
+  'port' =&gt; 10389,
+  'uid' =&gt; 'cn',
+  'method' =&gt; 'plain',
+  'bind_dn' =&gt; 'uid=admin,ou=system',
+  'password' =&gt; '密码',
+  'active_directory' =&gt; true,
+  'allow_username_or_email_login' =&gt; false,
+  'block_auto_created_users' =&gt; false,
+  'base' =&gt; 'dc=longshare,dc=com',
+  'user_filter' =&gt; '',
+  'attributes' =&gt; {
+    'username' =&gt; ['cn', 'uid', 'sAMAccountName'],
+    'email' =&gt; ['mail', 'email', 'userPrincipalName'],
+    'name' =&gt; 'displayName',
+    'first_name' =&gt; 'givenName',
+    'last_name' =&gt; 'sn'
+  },
+  'lowercase_usernames' =&gt; false,
+
+  # EE Only
+  'group_base' =&gt; '',
+  'admin_group' =&gt; '',
+  'external_groups' =&gt; [],
+  'sync_ssh_keys' =&gt; false
+  }
+}</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+详见：https://docs.gitlab.com/ee/administration/auth/ldap/index.html
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>JMAP简介</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>JMAP简介</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_用法">1. 用法</a>
+<ul class="sectlevel2">
+<li><a href="#_参数">1.1. 参数</a></li>
+<li><a href="#_option">1.2. option</a></li>
+</ul>
+</li>
+<li><a href="#_使用示例">2. 使用示例</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>命令jmap是一个多功能的命令。它可以生成 java 程序的 dump 文件， 也可以查看堆内对象示例的统计信息、查看 ClassLoader 的信息以及 finalizer 队列。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_用法"><a class="anchor" href="#_用法"></a>1. 用法</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_参数"><a class="anchor" href="#_参数"></a>1.1. 参数</h3>
+<div class="listingblock">
+<div class="content">
+<pre>option： 选项参数。
+pid： 需要打印配置信息的进程ID。
+executable： 产生核心dump的Java可执行文件。
+core： 需要打印配置信息的核心文件。
+server-id 可选的唯一id，如果相同的远程主机上运行了多台调试服务器，用此选项参数标识服务器。
+remote server IP or hostname 远程调试服务器的IP地址或主机名。</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_option"><a class="anchor" href="#_option"></a>1.2. option</h3>
+<div class="listingblock">
+<div class="content">
+<pre>no option： 查看进程的内存映像信息,类似 Solaris pmap 命令。
+heap： 显示Java堆详细信息
+histo[:live]： 显示堆中对象的统计信息
+clstats：打印类加载器信息
+finalizerinfo： 显示在F-Queue队列等待Finalizer线程执行finalizer方法的对象
+dump:&lt;dump-options&gt;：生成堆转储快照
+F： 当-dump没有响应时，使用-dump或者-histo参数. 在这个模式下,live子参数无效.
+help：打印帮助信息
+J&lt;flag&gt;：指定传递给运行jmap的JVM的参数</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_使用示例"><a class="anchor" href="#_使用示例"></a>2. 使用示例</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>查看进程的内存映像信息</p>
+<div class="listingblock">
+<div class="content">
+<pre>jmap pid</pre>
+</div>
+</div>
+</li>
+<li>
+<p>显示Java堆详细信息</p>
+<div class="listingblock">
+<div class="content">
+<pre>jmap -head pid
+
+Heap Configuration:
+   MinHeapFreeRatio         = 0 <i class="conum" data-value="1"></i><b>(1)</b>
+   MaxHeapFreeRatio         = 100 <i class="conum" data-value="2"></i><b>(2)</b>
+   MaxHeapSize              = 209715200 (200.0MB) <i class="conum" data-value="3"></i><b>(3)</b>
+   NewSize                  = 69730304 (66.5MB) <i class="conum" data-value="4"></i><b>(4)</b>
+   MaxNewSize               = 69730304 (66.5MB) <i class="conum" data-value="5"></i><b>(5)</b>
+   OldSize                  = 139984896 (133.5MB) <i class="conum" data-value="6"></i><b>(6)</b>
+   NewRatio                 = 2 <i class="conum" data-value="7"></i><b>(7)</b>
+   SurvivorRatio            = 8 <i class="conum" data-value="8"></i><b>(8)</b>
+   MetaspaceSize            = 21807104 (20.796875MB) <i class="conum" data-value="9"></i><b>(9)</b>
+   CompressedClassSpaceSize = 1073741824 (1024.0MB) <i class="conum" data-value="10"></i><b>(10)</b>
+   MaxMetaspaceSize         = 17592186044415 MB <i class="conum" data-value="11"></i><b>(11)</b>
+   G1HeapRegionSize         = 0 (0.0MB) <i class="conum" data-value="12"></i><b>(12)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>heap使用率小于0时进行收缩</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>heap使用率大于100时进行扩张</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>堆最大空间大小为200兆</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>新生代空间大小为66.5兆</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>新生代最大空间大小为66.5兆</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>老生代大小为133.5兆</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>新生代是老生代的1/2</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>eden:survivior=8</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>元数据空间大小为20兆</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>压缩类空间大小为1G</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>最大元数据大小</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>G1垃圾回收期关键参数堆分区大小为0</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

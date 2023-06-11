@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>状态设计</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>状态设计</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_状态展现方式">1. 状态展现方式</a>
+<ul class="sectlevel2">
+<li><a href="#_使用数字标识">1.1. 使用数字标识</a></li>
+<li><a href="#_使用英文字符串标识">1.2. 使用英文字符串标识</a></li>
+<li><a href="#_使用多位存储方式">1.3. 使用多位存储方式</a></li>
+</ul>
+</li>
+<li><a href="#_状态存储方式">2. 状态存储方式</a>
+<ul class="sectlevel2">
+<li><a href="#_数据库字段">2.1. 数据库字段</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_状态展现方式"><a class="anchor" href="#_状态展现方式"></a>1. 状态展现方式</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_使用数字标识"><a class="anchor" href="#_使用数字标识"></a>1.1. 使用数字标识</h3>
+<div class="paragraph">
+<p>适用于值域较少、变化较少，可以采用相似的规则语义来表述的状态，通常一个系统中为了达成一致理解，可以做如下规则定义，这样即使没有状态描述，也可以大致推演出该状态含义：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. 行动状态值</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">状态值</th>
+<th class="tableblock halign-left valign-top">状态说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行动未开始</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行动进行中</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行动成功</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行动失败</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行动取消</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行动暂停</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行动关闭</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. 资源状态值</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">状态值</th>
+<th class="tableblock halign-left valign-top">状态说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">资源创建</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">资源提交</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">资源有效</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">资源无效</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">资源撤销</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">资源冻结</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">资源删除</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_使用英文字符串标识"><a class="anchor" href="#_使用英文字符串标识"></a>1.2. 使用英文字符串标识</h3>
+<div class="paragraph">
+<p>适用于值域较多、变化较多，一般需要配合字典项进行翻译。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_使用多位存储方式"><a class="anchor" href="#_使用多位存储方式"></a>1.3. 使用多位存储方式</h3>
+<div class="paragraph">
+<p>适用于多维度开关类、经常需要增加维度的场景。</p>
+</div>
+<div class="paragraph">
+<p>权限定义可以根据位数字符串或者2的mifang</p>
+</div>
+<div class="listingblock">
+<div class="title">Java操作状态</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">int i = 1;
+int i2 = 2;
+#判断第一位的状态是否为1
+if((status &amp; i) == i)
+#判断
+if((status &amp; i2) == i2){
+    # 第二位的状态是否为1
+}else{
+    # 第二位的状态是否为0
+}
+
+# 设置第二位为1
+status = status | i2;
+
+# 设置第二位为0
+status &amp; (~i2)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">SQL操作状态</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">-- 筛选出第一位的状态为1的数据
+select * from user where status &amp; b'0001'
+select * from user where status &amp; 1
+-- 筛选出第一位的状态为0的数据
+select * from user where status ^ b'0001'
+select * from user where status ^ 1
+-- 设置第一位的状态为1
+update status = status | b'0001' from user where id = 1
+update status = status | 1 from user where id = 1
+-- 设置第一位的状态为0
+update status = status &amp; ~b'0001' from user where id = 1
+update status = status &amp; ~1 from user where id = 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_状态存储方式"><a class="anchor" href="#_状态存储方式"></a>2. 状态存储方式</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_数据库字段"><a class="anchor" href="#_数据库字段"></a>2.1. 数据库字段</h3>
+<div class="paragraph">
+<p>采用varchar2(N)，相比其他类型占用存储更少，且具有同等的性能、扩展性。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+更新于 2022-02-04 13:09:23 +0800
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>
