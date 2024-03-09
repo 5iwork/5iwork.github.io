@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="线程创建内存溢出排查及解决">
+<title>内存溢出-线程创建</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>内存溢出-线程创建</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_理论准备">1. 理论准备</a></li>
+<li><a href="#_排查">2. 排查</a>
+<ul class="sectlevel2">
+<li><a href="#_线程数">2.1. 线程数</a></li>
+<li><a href="#_监控">2.2. 监控</a></li>
+<li><a href="#_解决方案">2.3. 解决方案</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>java.lang.OutOfMemoryError: unable to create new native thread</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_理论准备"><a class="anchor" href="#_理论准备"></a>1. 理论准备</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>线程本质上是进程，显著区别在于线程运行在共享内存空间，而进程运行在独立内存空间，以下是相关参数：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>/proc/sys/kernel/pid_max 决定的进程数是运行于独立内存空间的进程</p>
+</li>
+<li>
+<p>/proc/sys/kernel/threads-max 决定的线程数是运行于共享内存空间的线程</p>
+</li>
+<li>
+<p>ulimit -u 指的是一个用户在同一时间最多能拥有的总进程(含线程)</p>
+</li>
+<li>
+<p>ulimit 的进程数(含线程)受限于 pid_max 及 threads-max</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_排查"><a class="anchor" href="#_排查"></a>2. 排查</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>一般由于两个原因导致的：</p>
+</div>
+<div class="paragraph">
+<p>1）内存空间不足以满足创建线程所需的stack size
+virtual memory &lt; stack size*the number of threads
+2）线程数已达到操作系统的上限</p>
+</div>
+<div class="paragraph">
+<p>最大线程数计算方法：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># 计算公式为:
+default_nproc = max_threads / 2;
+# 其中, max_threads = mempages / (8 * THREAD_SIZE / PAGE_SIZE);
+# mempages是机器的物理页面个数, THREAD_SIZE=8K, 所以, 计算公式为:
+default_nproc = max_threads / 2
+              = (mempages * PAGE_SIZE) / ( 2 * 8 *THREAD_SIZE )
+              = total_memory / 128K;
+
+# 计算本机默认nproc配置:
+cat /proc/meminfo | grep MemTotal
+MemTotal:       115571480 kB
+
+echo "115571480 / 128" | bc
+902902
+
+ulimit -u
+902682
+# 算出来default_nproc = 902902, 和实际的902682很接近,
+# 因为物理页面会存储一些关键数据, 所以实际的比计算出来的要小一些.</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_线程数"><a class="anchor" href="#_线程数"></a>2.1. 线程数</h3>
+<div class="listingblock">
+<div class="title">jvm stack size 相关参数</div>
+<div class="content">
+<pre>java -XX:+PrintFlagsFinal -version | grep ThreadStackSize</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">操作系统相关参数</div>
+<div class="content">
+<pre>#进程可用最大虚拟内存
+ulimit -v
+
+#最大栈大小
+ulimit -s
+
+#每个用户可创建最大进程数
+ulimit -u
+
+#查看全部设置
+ulimit -a
+
+#系统内存
+free -h
+
+#java线程设置
+java -XX:+PrintFlagsFinal -version | grep ThreadStackSize
+
+#系统支持的最大进程数
+cat /proc/sys/kernel/pid_max
+
+#共享内存最大线程数
+cat /proc/sys/kernel/threads-max
+
+#查询当前系统已用的进程数
+ps -elf | wc -l
+
+#查询当前系统已用的线程和进程数
+ps -eLf | wc -l
+
+#获取进程id
+ps -ef | grep &lt;key word&gt;
+
+#查询当前某程序的线程或进程数
+ps -p &lt;pid&gt; -Lf | wc -l</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_监控"><a class="anchor" href="#_监控"></a>2.2. 监控</h3>
+<div class="listingblock">
+<div class="title">内存使用率</div>
+<div class="content">
+<pre>free -m | awk 'NR==2{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }'</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">可用内存</div>
+<div class="content">
+<pre>freeMem=`free -m | awk 'NR==2{printf "%sMB\n", $4}'`
+threadNum=`ps -eLf | wc -l`
+dateS=`date "+%Y%m%d"`
+timeS=`date "+%H:%M:%S"`
+echo "$timeS $threadNum $freeMem" &gt;&gt; /tmp/$dateS.indicator</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_解决方案"><a class="anchor" href="#_解决方案"></a>2.3. 解决方案</h3>
+<div class="paragraph">
+<p><a href="https://blog.fastthread.io/2016/07/06/troubleshoot-outofmemoryerror-unable-to-create-new-native-thread/" class="bare">https://blog.fastthread.io/2016/07/06/troubleshoot-outofmemoryerror-unable-to-create-new-native-thread/</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="命令行浏览器">
+<title>wcm</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>wcm</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_常用命令">1. 常用命令</a></li>
+<li><a href="#_光标移动">2. 光标移动</a></li>
+<li><a href="#_链接操作">3. 链接操作</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_常用命令"><a class="anchor" href="#_常用命令"></a>1. 常用命令</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 18.75%;">
+<col style="width: 31.25%;">
+<col style="width: 18.75%;">
+<col style="width: 31.25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[空格]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">下一页</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">b</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">上一页</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C-h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">访问历史</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">B</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">返回上次页面</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">U</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">输入网址</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">显示网址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Esc-a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">添加书签</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Esc-b</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">列出标签</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">T</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">打开一个新的标签页</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">H</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">帮助</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">设置</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">设置</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C-c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">停止</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C-z</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">挂起</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">q</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">退出</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Q</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">强制退出</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_光标移动"><a class="anchor" href="#_光标移动"></a>2. 光标移动</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 18.75%;">
+<col style="width: 31.25%;">
+<col style="width: 18.75%;">
+<col style="width: 31.25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">h/&lt;ctrl&gt;+b</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向左移动</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">j/ctrl+n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向下移动</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k/ctrl+p</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向上移动</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">l/ctrl+f</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向右移动</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向下滚动页面</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向上滚动页面</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">^/ctrl+a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行首</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$/ctrl+e</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行尾</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">w</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">下一个词语</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">上一个词语</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">第一行</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">G</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最后一行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TAB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">下一个超链接</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ctrl+u/ESC+TAB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">上一个超链接</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">第一个超链接</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最后一个超链接</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_链接操作"><a class="anchor" href="#_链接操作"></a>3. 链接操作</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跟随超链接</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查看链接网址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">i</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查看图像网址</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">I</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查看嵌入式图像</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查看当前网址</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ctrl<br></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查看当前行号</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ctrl<br></p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">查看网页历史</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">渲染当前</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">B / shift<br></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">后退</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">R</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">刷新</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

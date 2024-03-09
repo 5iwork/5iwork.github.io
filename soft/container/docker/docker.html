@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
-<title>Docke</title>
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="Docker配置及使用">
+<title>Docker配置及使用</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Docke</h1>
+<h1>Docker配置及使用</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">本页目录</div>
 <ul class="sectlevel1">
-<li><a href="#_常见问题">1. 常见问题</a></li>
+<li><a href="#_常见问题">1. 常见问题</a>
+<ul class="sectlevel2">
+<li><a href="#_非root用户使用docker">1.1. 非root用户使用docker</a></li>
+<li><a href="#_docker映射端口无法访问">1.2. Docker映射端口无法访问</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -25,16 +32,97 @@
 <div class="sect1">
 <h2 id="_常见问题"><a class="anchor" href="#_常见问题"></a>1. 常见问题</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_非root用户使用docker"><a class="anchor" href="#_非root用户使用docker"></a>1.1. 非root用户使用docker</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">chmod o+rw /var/run/docker.sock</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_docker映射端口无法访问"><a class="anchor" href="#_docker映射端口无法访问"></a>1.2. Docker映射端口无法访问</h3>
+<div class="listingblock">
+<div class="title">检查firewall</div>
+<div class="content">
+<pre>firewall-cmd --state
+firewall-cmd --list-ports
+firewall-cmd --list-services</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">关闭防火墙</div>
+<div class="content">
+<pre>systemctl stop firewalld</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">开启端口</div>
+<div class="content">
+<pre>firewall-cmd --add-port=5000/tcp --permanent
+firewall-cmd --reload</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">检查是否没开启转发</div>
+<div class="content">
+<pre>sysctl net.ipv4.ip_forward</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如果为0，则未开启，需要开启，开启方法如下：</p>
+</div>
+<div class="listingblock">
+<div class="title">/etc/sysctl.conf 或者 vi /usr/lib/sysctl.d/00-system.conf：</div>
+<div class="content">
+<pre>net.ipv4.ip_forward = 1</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">然后重启</div>
+<div class="content">
+<pre>systemctl restart network</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">或者临时开启：</div>
+<div class="content">
+<pre>sysctl -w net.ipv4.ip_forward=1</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">检查iptables</div>
+<div class="content">
+<pre>#设置iptables防火墙为开机启动项
+systemctl enable iptables.service
+
+#启动防火墙使配置文件生效
+systemctl start iptables.service
+
+#停止防火墙
+systemctl stop iptables.service
+
+#重启防火墙使配置文件生效
+systemctl restart iptables.service</pre>
+</div>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>非root用户使用docker</p>
+<p>查看selinux状态是否为permissive或者disabled；</p>
 </li>
 </ol>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">chmod o+rw /var/run/docker.sock</code></pre>
+<pre>getenforce</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">关闭</div>
+<div class="content">
+<pre>setenforce 0</pre>
+</div>
 </div>
 </div>
 </div>
@@ -42,12 +130,15 @@
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-04 13:09:23 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

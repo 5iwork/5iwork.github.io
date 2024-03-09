@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <title>关于我们</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
@@ -20,7 +21,7 @@
 <li><a href="#_我们是谁">1. 我们是谁？</a></li>
 <li><a href="#_我们从哪儿来">2. 我们从哪儿来？</a></li>
 <li><a href="#_我们要干什么">3. 我们要干什么？</a></li>
-<li><a href="#_什么是5i法则5i">4. 什么是5I法则？[5i]</a>
+<li><a href="#5i">4. 什么是5I法则？</a>
 <ul class="sectlevel2">
 <li><a href="#_inspiration_灵感创意">4.1. Inspiration 灵感创意</a></li>
 <li><a href="#_intellectual_提案策划">4.2. Intellectual 提案策划</a></li>
@@ -91,7 +92,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_什么是5i法则5i"><a class="anchor" href="#_什么是5i法则5i"></a>4. 什么是5I法则？[5i]</h2>
+<h2 id="5i"><a class="anchor" href="#5i"></a>4. 什么是5I法则？</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_inspiration_灵感创意"><a class="anchor" href="#_inspiration_灵感创意"></a>4.1. Inspiration 灵感创意</h3>
@@ -118,12 +119,15 @@
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-04 13:06:40 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

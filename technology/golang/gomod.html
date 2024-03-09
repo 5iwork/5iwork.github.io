@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<title>go-mod</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_go_mod">1. go-mod</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_go_mod"><a class="anchor" href="#_go_mod"></a>1. go-mod</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>go mod init：初始化go mod， 生成go.mod文件，后可接参数指定 module 名，上面已经演示过。</p>
+</div>
+<div class="paragraph">
+<p>go mod download：手动触发下载依赖包到本地cache（默认为$GOPATH/pkg/mod目录）</p>
+</div>
+<div class="paragraph">
+<p>go mod graph：打印项目的模块依赖结构</p>
+</div>
+<div class="paragraph">
+<p>go mod tidy ：添加缺少的包，且删除无用的包</p>
+</div>
+<div class="paragraph">
+<p>go mod verify ：校验模块是否被篡改过</p>
+</div>
+<div class="paragraph">
+<p>go mod why：查看为什么需要依赖</p>
+</div>
+<div class="paragraph">
+<p>go mod vendor ：导出项目所有依赖到vendor下</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

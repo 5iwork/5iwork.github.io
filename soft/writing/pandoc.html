@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="文档格式转换">
 <title>文档格式转换</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
@@ -19,6 +21,7 @@
 <ul class="sectlevel1">
 <li><a href="#_word_asciidoc">1. Word &#8594; Asciidoc</a></li>
 <li><a href="#_markdown_asciidoc">2. Markdown &#8594; Asciidoc</a></li>
+<li><a href="#_asciidoc_word">3. asciidoc &#8594; word</a></li>
 </ul>
 </div>
 </div>
@@ -26,7 +29,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>文档格式转换之王，https://pandoc.org/[Pandoc官网]</p>
+<p>文档格式转换之王，想见<a href="https://pandoc.org/">Pandoc官网</a>。</p>
 </div>
 </div>
 </div>
@@ -35,7 +38,7 @@
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">pandoc --from=docx --to=asciidoc --wrap=none --atx-headers --extract-media=extracted-media 文件名.docx &gt; 文件名.adoc</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pandoc --from=docx --to=asciidoc --wrap=none --atx-headers --extract-media=extracted-media 文件名.docx &gt; 文件名.adoc</code></pre>
 </div>
 </div>
 </div>
@@ -45,7 +48,20 @@
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">pandoc -f markdown -t asciidoc -o index.adoc index.md</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pandoc -f markdown -t asciidoc -o index.adoc index.md</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_asciidoc_word"><a class="anchor" href="#_asciidoc_word"></a>3. asciidoc &#8594; word</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre># 使用asciidoctor转换adoc为docbook格式
+asciidoctor -a sectnums -a icons=font -a toclevels=6 -b docbook index.adoc -o index.xml
+# 使用pandoc转换为docx格式
+pandoc -f docbook -t docx -o index.docx index.xml</pre>
 </div>
 </div>
 </div>
@@ -53,12 +69,15 @@
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-05 10:04:12 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

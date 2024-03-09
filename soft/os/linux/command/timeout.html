@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="指定运行的命令最大运行时长">
+<title>timeout命令</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>timeout命令</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_常用示例">1. 常用示例</a></li>
+<li><a href="#_发送信号">2. 发送信号</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>timeout 指定运行的命令最大运行时长，时间到则终止该命令。</p>
+</div>
+<div class="paragraph">
+<p>单位默认为秒，也可以指定单位，单位：s(秒),m(分钟),h(小时),d(日)。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_常用示例"><a class="anchor" href="#_常用示例"></a>1. 常用示例</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">5秒后终止ping操作</div>
+<div class="content">
+<pre>timeout 5 ping www.baidu.com
+#timeout 5s ping www.baidu.com</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">5分钟后终止ping操作</div>
+<div class="content">
+<pre>timeout 5m ping www.baidu.com</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">5天后终止ping操作</div>
+<div class="content">
+<pre>timeout 5d ping www.baidu.com</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_发送信号"><a class="anchor" href="#_发送信号"></a>2. 发送信号</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>当达到时间限制时，timeout将SIGTERM信号发送到受管命令。可以使用-s（-signal）选项指定要发送的信号。</p>
+</div>
+<div class="listingblock">
+<div class="title">5秒钟后timeout 发送SIGKILL信号给ping命令，终止命令</div>
+<div class="content">
+<pre>timeout -s SIGKILL 5s ping www.baidu.com</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

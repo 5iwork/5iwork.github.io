@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="firewall防火墙管理">
+<title>firewall</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>firewall</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_基本命令">1. 基本命令</a></li>
+<li><a href="#_添加端口规则">2. 添加端口规则</a>
+<ul class="sectlevel2">
+<li><a href="#_开放端口">2.1. 开放端口</a></li>
+<li><a href="#_端口转发">2.2. 端口转发</a></li>
+<li><a href="#_开放服务">2.3. 开放服务</a></li>
+<li><a href="#_设置单向端口访问">2.4. 设置单向端口访问</a></li>
+</ul>
+</li>
+<li><a href="#_删除端口规则">3. 删除端口规则</a>
+<ul class="sectlevel2">
+<li><a href="#_禁用端口">3.1. 禁用端口</a></li>
+<li><a href="#_删除端口转发">3.2. 删除端口转发</a></li>
+</ul>
+</li>
+<li><a href="#_应用配置规则">4. 应用配置规则</a></li>
+<li><a href="#_其他">5. 其他</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_基本命令"><a class="anchor" href="#_基本命令"></a>1. 基本命令</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">列出所支持的zone和查看当前的默认zone</div>
+<div class="content">
+<pre>#firewall-cmd --get-zones</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">默认使用区域</div>
+<div class="content">
+<pre>#firewall-cmd --get-default-zone</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">查看防火墙规则</div>
+<div class="content">
+<pre># firewall-cmd --list-all</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">查看规则状态</div>
+<div class="content">
+<pre>#firewall-cmd --state</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">加载规则</div>
+<div class="content">
+<pre>#firewall-cmd --reload</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_添加端口规则"><a class="anchor" href="#_添加端口规则"></a>2. 添加端口规则</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_开放端口"><a class="anchor" href="#_开放端口"></a>2.1. 开放端口</h3>
+<div class="listingblock">
+<div class="content">
+<pre>firewall-cmd --zone=public --add-port=端口/tcp --permanent
+firewall-cmd --zone=public --add-port=端口/udp --permanent</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_端口转发"><a class="anchor" href="#_端口转发"></a>2.2. 端口转发</h3>
+<div class="listingblock">
+<div class="title">启用转发端口</div>
+<div class="content">
+<pre>firewall-cmd --add-masquerade --permanent</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">添加TCP/UDP端口转发</div>
+<div class="content">
+<pre>firewall-cmd --add-forward-port=port=本地端口:proto=tcp:toaddr=目的IP:toport=目的端口 --permanent
+firewall-cmd --add-forward-port=port=本地端口:proto=udp:toaddr=目的IP:toport=目的端口 --permanent</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_开放服务"><a class="anchor" href="#_开放服务"></a>2.3. 开放服务</h3>
+<div class="listingblock">
+<div class="content">
+<pre>firewall-cmd --get-services #查询所有支持的服务，对应的是/usr/lib/firewalld/services目录下的xml
+firewall-cmd --query-service ftp  #查询是否支持ftp服务，返回yes或者no
+firewall-cmd --zone=public --add-service=http --permanent #放行http服务</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_设置单向端口访问"><a class="anchor" href="#_设置单向端口访问"></a>2.4. 设置单向端口访问</h3>
+<div class="listingblock">
+<div class="content">
+<pre>#firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="192.168.0.1" port protocol="tcp" port="80" accept"
+family  对哪个协议
+source address  源地址
+accept  允许
+drop    拒绝</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_删除端口规则"><a class="anchor" href="#_删除端口规则"></a>3. 删除端口规则</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_禁用端口"><a class="anchor" href="#_禁用端口"></a>3.1. 禁用端口</h3>
+<div class="listingblock">
+<div class="content">
+<pre>firewall-cmd --zone=public --remove-port=端口/tcp --permanent
+firewall-cmd --zone=public --remove-port=端口/udp --permanent</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_删除端口转发"><a class="anchor" href="#_删除端口转发"></a>3.2. 删除端口转发</h3>
+<div class="listingblock">
+<div class="title">禁用转发端口</div>
+<div class="content">
+<pre>firewall-cmd --remove-masquerade --permanent</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">添加TCP/UDP端口转发</div>
+<div class="content">
+<pre>#删除TCP端口转发
+firewall-cmd --remove-forward-port=port=本地端口:proto=tcp:toaddr=目的IP:toport=目的端口 --permanent
+#删除UDP端口转发
+firewall-cmd --remove-forward-port=port=本地端口:proto=udp:toaddr=目的IP:toport=目的端口 --permanent</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_应用配置规则"><a class="anchor" href="#_应用配置规则"></a>4. 应用配置规则</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>firewall-cmd --reload</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_其他"><a class="anchor" href="#_其他"></a>5. 其他</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>#《实例一》防火墙查询
+firewall-cmd --version    //查看版本
+firewall-cmd --help  // 查看帮助
+firewall-cmd --state // 显示状态
+firewall-cmd --get-services //获取支持服务列表（firewalld内置服务支持）
+firewall-cmd --zone=public --list-ports  //查看所有打开的端口
+firewall-cmd --list-forward-ports  //查看转发的端口
+fierewall-cmd –reload        //重新加载防火墙策略
+firewall-cmd --get-active-zones  //查看区域信息
+firewall-cmd --list-all-zones  //列出全部启用的区域的特性
+firewall-cmd --list-services  //显示防火墙当前服务
+firewall-cmd --get-zone-of-interface=eth0  //查看指定接口所属区域
+firewall-cmd --panic-on   //拒绝所有包
+firewall-cmd --panic-offfir  //取消拒绝状态
+firewall-cmd --query-panic  //查看是否拒绝
+# 《实例二》 运行时区域策略设置示例（注：以下示例不加zone的为默认区域public）
+firewall-cmd --add-service=ssh        //允许 ssh 服务通过
+firewall-cmd --remove-service=ssh        //禁止 ssh 服务通过
+firewall-cmd --add-service=samba --timeout=600        //临时允许 samba 服务通过 600 秒
+firewall-cmd --add-service=http --zone=work        //允许http服务通过work区域
+firewall-cmd --zone=work --add-service=http        //从work区域打开http服务
+firewall-cmd --zone=internal --add-port=443/tcp        //打开 443/tcp 端口在内部区域（internal）
+firewall-cmd --zone=internal --remove-port=443/tcp        //关闭443/tcp 端口在内部区域（internal）
+firewall-cmd --add-interface=eth0        //打开网卡eth0
+firewall-cmd --remove-interface=eth0        //关闭网卡eth0
+ #《 实例三》 永久区域策略设置示例（注：以下示例不加zone的为默认区域public；永久设置均需重新加载防火墙策略或重启系统）
+firewall-cmd --permanent --add-service=ftp        //永久允许 ftp 服务通过
+firewall-cmd --permanent --remove-service=ftp        //永久禁止 ftp 服务通过
+firewall-cmd --permanent --add-service=http --zone=external     //永久允许http服务通过external区域
+firewall-cmd --permanent --add-service=http --zone=external     //永久允许http服务通过external区域
+firewall-cmd --permanent --zone=internal --add-port=111/tcp        //打开 111/tcp 端口在内部区域（internal）
+firewall-cmd --permanent --zone=internal --remove-port=111/tcp        //关闭 111/tcp 端口在内部区域（internal）
+firewall-cmd --permanent --add-interface=eth0      //永久打开网卡eth0
+firewall-cmd --permanent --remove-interface=eth0        //永久关闭网卡eth0
+firewall-cmd --permanent --zone=public --add-port=8080-8083/tcp  //添加多个端口
+firewall-cmd --permanent --zone=public --remove-port=81/tcp //删除某个端口
+firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source address="192.168.1.51" accept" //删除某个IP
+firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="192.168.0.0/16" accept" //
+firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="192.168.1.0/24" port protocol="tcp" port="9200" accept"  //针对某个ip段访问
+firewall-cmd --reload   //添加操作后别忘了执行重载才会生效</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

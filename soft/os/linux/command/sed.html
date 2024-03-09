@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="文本处理">
+<title>sed</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>sed</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_正则匹配转义">1. 正则匹配转义</a></li>
+<li><a href="#_命令">2. 命令</a></li>
+<li><a href="#_示例">3. 示例</a>
+<ul class="sectlevel2">
+<li><a href="#_追加删除">3.1. 追加删除</a></li>
+<li><a href="#_查找替换">3.2. 查找替换</a></li>
+<li><a href="#_多点编辑">3.3. 多点编辑</a></li>
+<li><a href="#_搜索并执行命令多个命令花括号包含起来">3.4. 搜索并执行命令，多个命令花括号包含起来</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_正则匹配转义"><a class="anchor" href="#_正则匹配转义"></a>1. 正则匹配转义</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>作为正常字符时需要转义：<code>[]</code></p>
+</li>
+<li>
+<p>作为特殊字符时需要转移：<code>{}()+</code>，不需要转义：<code>*</code></p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_命令"><a class="anchor" href="#_命令"></a>2. 命令</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>参数说明：</p>
+</div>
+<div class="paragraph">
+<p>-e&lt;script&gt;或&#8212;&#8203;expression=&lt;script&gt; 以选项中指定的script来处理输入的文本文件。
+-f&lt;script文件&gt;或&#8212;&#8203;file=&lt;script文件&gt; 以选项中指定的script文件来处理输入的文本文件。
+-h或&#8212;&#8203;help 显示帮助。
+-n或&#8212;&#8203;quiet或&#8212;&#8203;silent 仅显示script处理后的结果。
+-V或&#8212;&#8203;version 显示版本信息。</p>
+</div>
+<div class="paragraph">
+<p>动作说明：</p>
+</div>
+<div class="paragraph">
+<p>a ：新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)；
+c ：取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行；
+d ：删除
+i ：插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；
+p ：打印，通常 p 会与参数 sed -n 一起运行
+s ：取代，这个 s 的动作可以搭配正则表达式</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_示例"><a class="anchor" href="#_示例"></a>3. 示例</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_追加删除"><a class="anchor" href="#_追加删除"></a>3.1. 追加删除</h3>
+<div class="listingblock">
+<div class="content">
+<pre># sample.txt文件第4行后面追加一行
+sed -e '4a hello' sample.txt
+
+# sample.txt文件第1行前面添加“hello”；实质就是插入内容到文件第1行
+sed -i '1 i hello' sample.txt
+
+# sample.txt文件第1行后面添加“hello”；实质就是插入内容到文件第2行
+sed -i '1 a hello' sample.txt
+
+# 把"hello"插入到最后一行
+sed -i '$a hello' sample.txt
+
+# 在1-2行行首添加bb
+sed -i '1,2{s/^/bb/}' sample.txt
+
+# 在1-2行行尾添加bb
+sed -i '1,2{s/$/bb/}' sample.txt</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">将第 2~5 行删除</div>
+<div class="content">
+<pre>nl aaa.txt | sed '2,5d'</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">将文件中包含 字符串1 的行删除</div>
+<div class="content">
+<pre>sed -i "/字符串1/d" 文件名.txt
+
+#包含 字符串1 或 字符串2的行删除
+sed -i "/字符串1\|字符串2/d" 文件名.txt
+
+#删除以R或F开头的行
+sed '/^[RF]/d' 文件名.txt
+
+#删除以 x 或 m 结尾的行
+sed '/[xm]$/d' 文件名.txt</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">删除空白行</div>
+<div class="content">
+<pre>sed '/^$/d' 文件名.txt</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_查找替换"><a class="anchor" href="#_查找替换"></a>3.2. 查找替换</h3>
+<div class="listingblock">
+<div class="content">
+<pre># 加 g 为全局查找替换
+sed 's/要被取代的字串/新的字串/g'
+
+# 不加则为每行第一次出现的替换
+sed 's/要被取代的字串/新的字串/'
+
+# 参数 e 则输出修改后内容，不修改原文件
+sed -e 's/要被取代的字串/新的字串/g' aaa.txt
+
+# 参数 i 直接修改原文件，不输出结果
+sed -i 's/要被取代的字串/新的字串/g' aaa.txt
+
+# 多个文件批量修改
+sed -i 's/要被取代的字串/新的字串/g' *.txt
+
+# 如果替换的内容有/，可以将分隔符改为其他的字符，比如#
+sed -i 's#要被取代的字串#新的字串#g' *.txt
+
+# 使用变量
+#方式1: 使用单引号，变量处使用单引号+双引号把变量包括起来
+sed -i 's#要被取代的字串#新的字串'"${a}"'#g' *.txt
+#方式2: 使用双引号
+sed -i "s#要被取代的字串#新的字串${a}#g" *.txt
+#方式3: 使用单引号，变量直接引用，但是需要通过 eval 执行这个sed命令。eval会对后面Shell命令进行两遍扫描，如果第一遍扫描后，Shell命令是个普通命令，则执行此命令；如果Shell命令是含有变量的间接引用，则保证间接引用的语义
+eval sed -i 's#要被取代的字串#新的字串${a}#g' *.txt</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_多点编辑"><a class="anchor" href="#_多点编辑"></a>3.3. 多点编辑</h3>
+<div class="listingblock">
+<div class="content">
+<pre># 删除第3行之后的数据，同时对行数据进行替换
+nl aaa.txt | sed -e '3,$d' -e 's/要被取代的字串/新的字串/'</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_搜索并执行命令多个命令花括号包含起来"><a class="anchor" href="#_搜索并执行命令多个命令花括号包含起来"></a>3.4. 搜索并执行命令，多个命令花括号包含起来</h3>
+<div class="listingblock">
+<div class="content">
+<pre># 搜素，然后替换打印后退出
+nl aaa.txt | sed -n '/搜索关键字/{s/要被取代的字串/新的字串/;p;q}'</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

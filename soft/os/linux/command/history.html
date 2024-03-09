@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="命令行执行历史">
+<title>history</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>history</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_常用命令">1. 常用命令</a></li>
+<li><a href="#_命令加日期">2. 命令加日期</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>bash执行命令时不是马上把命令名称写入history文件的，而是存放在内部的buffer中，等bash退出时会一并写入。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_常用命令"><a class="anchor" href="#_常用命令"></a>1. 常用命令</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">命令</th>
+<th class="tableblock halign-left valign-top">用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">列出全部历史命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">数字# 列出最近的#条命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history -c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将目前shell中的所有history命令消除【就是按↑翻不到了】，对命令历史文件没有影响</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history -w</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将本次登录的命令写入命令历史文件中, 默认写入~/.bash_history【其实是会自动保存的】</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history -r</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将命令历史文件中的内容读入到目前shell的history记忆中【就是按↑能翻到】</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history -d</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">指定编号删除指令</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_命令加日期"><a class="anchor" href="#_命令加日期"></a>2. 命令加日期</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">/etc/profile</div>
+<div class="content">
+<pre>export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

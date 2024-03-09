@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="cat查看文件">
+<title>cat</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>cat</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_cat_命令与_eof_的结合使用">1. cat 命令与 EOF 的结合使用</a></li>
+<li><a href="#_cat_eof_与_cat_eof_的区别">2. <code>cat &lt;&lt;EOF</code> 与 <code>cat &lt;&#8592;EOF</code> 的区别</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_cat_命令与_eof_的结合使用"><a class="anchor" href="#_cat_命令与_eof_的结合使用"></a>1. cat 命令与 EOF 的结合使用</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>使用 cat 命令和 EOF 写入文件的一般格式如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>cat &gt; 目标文件名 &lt;&lt; EOF
+写入的文本内容
+EOF</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">使用变量</div>
+<div class="content">
+<pre>cat &gt; 目标文件名 &lt;&lt; EOF
+写入的文本内容:${变量}
+EOF</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">不使用变量</div>
+<div class="content">
+<pre>cat &gt; 目标文件名 &lt;&lt; 'EOF'
+写入的文本内容，这里面的${变量}不会被替换
+EOF</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>确保结束标记 EOF 单独成行，前后不要有空格或其他字符。</p>
+</li>
+<li>
+<p>如果脚本中多次使用 EOF，确保每次使用的结束标记唯一，以防止混淆</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cat_eof_与_cat_eof_的区别"><a class="anchor" href="#_cat_eof_与_cat_eof_的区别"></a>2. <code>cat &lt;&lt;EOF</code> 与 <code>cat &lt;&#8592;EOF</code> 的区别</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>&lt;&#8592;</code> 分界符（EOF）所在行的开头部分的制表符（Tab）都将被去除。</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

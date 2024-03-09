@@ -36,6 +36,6 @@ if (toctitle != null) {
 var domain = document.domain?document.domain:"5i.work";
 var toctitle = document.getElementById('footer-text');
 if (toctitle != null) {
-    toctitle.insertAdjacentHTML("beforeend", " ©<a href='/'>" + domain + "</a> | <a style='font-size:14px;' href='http://www.beian.miit.gov.cn/'>浙ICP备15019268号-1</a>")
+    toctitle.insertAdjacentHTML("beforeend", " © 2024 <a href='/'>" + domain + "</a> | <a style='font-size:14px;' href='http://www.beian.miit.gov.cn/'>浙ICP备15019268号-1</a>")
 }
 

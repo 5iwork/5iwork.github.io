@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="控制台输出">
+<title>echo</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>echo</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_输出">1. 输出</a></li>
+<li><a href="#_终端输出颜色">2. 终端输出颜色</a>
+<ul class="sectlevel2">
+<li><a href="#_字体控制选项">2.1. 字体控制选项</a></li>
+<li><a href="#_前景颜色控制">2.2. 前景颜色控制</a></li>
+<li><a href="#_背景颜色控制">2.3. 背景颜色控制</a></li>
+<li><a href="#_示例">2.4. 示例</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_输出"><a class="anchor" href="#_输出"></a>1. 输出</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>-n 不换行，默认是换行
+-E 不处理特殊字符（默认）
+-e 处理特殊字符，主要特殊字符如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>\a 发出警告声；
+\b 删除前一个字符；
+\c 最后不加上换行符号；
+\f 换行但光标仍旧停留在原来的位置；
+\n 换行且光标移至行首；
+\r 光标移至行首，但不换行；
+\t 插入tab；
+\v 与\f相同</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_终端输出颜色"><a class="anchor" href="#_终端输出颜色"></a>2. 终端输出颜色</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">控制定义</div>
+<div class="content">
+<pre>0 终端默认设置（黑底白字）
+1 高亮显示
+2 暗色显示
+4 使用下划线
+5 闪烁
+7 反白显示
+8 不可见</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 1. 颜色定义</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">字色</th>
+<th class="tableblock halign-left valign-top">背景</th>
+<th class="tableblock halign-left valign-top">颜色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">40</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">黑色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">31</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">41</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">紅色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">42</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">綠色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">33</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">43</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">黃色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">34</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">44</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">藍色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">35</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">45</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">紫紅色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">36</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">46</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">青藍色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">37</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">47</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">灰色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅黑色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">91</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">101</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅紅色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">92</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">102</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅綠色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">93</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">103</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅黃色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">94</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">104</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅藍色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">95</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">105</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅紫紅色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">96</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">106</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅青藍色</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">97</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">107</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">白色</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>ANSI/VT100终端和终端仿真器不只是能够显示黑色和白色文本; 由于转义序列，它们可以显示颜色和格式化文本。这些序列由Escape字符（通常用“^[” 或"&lt;Esc&gt;"表示）组成，后跟一些其他字符：“&lt;Esc&gt;[FormatCodem”。
+在Bash中，可以使用以下语法获取Escape字符：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>\e
+\033
+\x1B
+\E</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>echo 显示内容带颜色显示，格式如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># echo -e "\033[字背景颜色;字体颜色;字体属性m 需要输出的内容 \033[0m"</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>\033为转义字符</p>
+</li>
+<li>
+<p>[ 表示开始定义颜色</p>
+</li>
+<li>
+<p>字背景颜色 范围 40-47 。</p>
+</li>
+<li>
+<p>字体颜色 范围 30-37 。</p>
+</li>
+<li>
+<p>m 转义终止符，表示颜色定义完毕。</p>
+</li>
+<li>
+<p>再次使用 \033[ ，表示再次开启颜色定义，0 表示颜色定义结束，所以 \033[0m 的作用是恢复之前的配色方案。</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_字体控制选项"><a class="anchor" href="#_字体控制选项"></a>2.1. 字体控制选项</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 2. Set设置</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">编码</th>
+<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-left valign-top">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">粗体/高亮度</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "\e[1m粗体/高亮度\e[0m"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">变暗</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[2m暗\e[0m"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">下划线</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[4m下划线\e[0m"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">闪烁</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[5m闪烁\e[0m"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">反转（反转前景色和背景色）</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[7m反转\e[0m"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">隐藏或消影，字符颜色将会与背景颜色相同（对密码有用）</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[8m隐藏\e[0m"</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 3. Reset重置</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">编码</th>
+<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-left valign-top">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重置所有属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "\e[0m关闭所有属性"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重置粗体/高亮</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[1mB粗体/高亮度\e[21m正常"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重置变暗</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[2m暗\e[22m正常"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重置下划线</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常\e[4m下划线\e[24m正常""</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重置闪烁</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常 \e[5m闪烁\e[25m正常""</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">27</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重置反显</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常 \e[7m反转\e[27m正常"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">28</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重置隐藏</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "正常 \e[8m隐藏\e[28m正常"</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 4. 光标控制</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">编码</th>
+<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-left valign-top">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">光标上移 n 行</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "\e[1A"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">光标下移 n 行</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "\e[2B"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">光标右移 n 行</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "\e[2C"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">光标左移 n 行</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "\e[2D"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">y;xH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">设置光标位置</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">清屏</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">清除从光标到行尾的内容</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">保存光标位置</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">恢复光标位置</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">?25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">隐藏光标</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">?25h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">显示光标</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_前景颜色控制"><a class="anchor" href="#_前景颜色控制"></a>2.2. 前景颜色控制</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 5. 字体颜色</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">编码</th>
+<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-left valign-top">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">39</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">默认前景色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[39mDefault"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">黑色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[30mBlack"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">31</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">红色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[31mRed"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">绿色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[32mGreen"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">33</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">黄色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[33mYellow"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">34</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">蓝色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[34mBlue"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">35</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">品红</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[35mMagenta"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">36</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">青色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[36mCyan"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">37</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅灰</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[37mLight grey"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">深灰色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[90mDark grey"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">91</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">红灯</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e “默认\ e [91mLight red"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">92</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅绿色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[92mLight green"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">93</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">淡黄色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[93mLight yellow"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">94</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅蓝</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[94mLight blue"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">95</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅洋红色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[95mLight magenta"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">96</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅青色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[96mLight cyan"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">97</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">白色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[97mWhite"</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">示例</div>
+<div class="content">
+<pre>#!/bin/bash
+# 定义颜色变量
+RED='\e[1;31m' # 红
+GREEN='\e[1;32m' # 绿
+YELLOW='\e[1;33m' # 黄
+BLUE='\e[1;34m' # 蓝
+PINK='\e[1;35m' # 粉红
+RES='\e[0m' # 清除颜色
+
+echo -e "${RED}Red${RES}"
+echo -e "${GREEN}Green${RES}"
+echo -e "${YELLOW}Yellow${RES}"
+echo -e "${BLUE}Blue${RES}"
+echo -e "${PINK}Pink${RES}"
+
+echo -e "\e[30m 黑色 \e[0m"
+echo -e "\e[31m 红色 \e[0m"
+echo -e "\e[32m 绿色 \e[0m"
+echo -e "\e[33m 黄色 \e[0m"
+echo -e "\e[34m 蓝色 \e[0m"
+echo -e "\e[35m 紫色 \e[0m"
+echo -e "\e[36m 青色 \e[0m"
+echo -e "\e[37m 浅灰色 \e[0m"
+echo -e "\e[90m 深灰色 \e[0m"
+echo -e "\e[91m 浅红字 \e[0m"
+echo -e "\e[92m 浅绿字 \e[0m"
+echo -e "\e[93m 浅黄字 \e[0m"
+echo -e "\e[94m 浅蓝字 \e[0m"
+echo -e "\e[95m 浅紫字 \e[0m"
+echo -e "\e[96m 浅青字 \e[0m"
+echo -e "\e[97m 白字 \e[0m"</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_背景颜色控制"><a class="anchor" href="#_背景颜色控制"></a>2.3. 背景颜色控制</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 6. 背景颜色</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">编码</th>
+<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-left valign-top">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">49</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">默认背景颜色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[49mDefault"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">40</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">黑色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[40mBlack"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">41</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">红色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[41mRed"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">42</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">绿色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[42mGreen"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">43</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">黄色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[43mYellow"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">44</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">蓝色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[44mBlue"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">45</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">品红</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[45mMagenta"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">46</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">青色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[46mCyan"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">47</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅灰</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[47mLight grey"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">深灰色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[100mDark grey"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">101</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">红灯</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e “默认\ e [101mLight red"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">102</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅绿色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e “默认\ e [102mLight green"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">103</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">淡黄色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e “默认\ e [103mLight yellow"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">104</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅蓝</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[104mLight blue"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">105</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅洋红色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[105mLight magenta"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">106</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">浅青色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[106mLight cyan"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">107</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">白色</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">echo -e "默认\e[107mWhite"</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">示例</div>
+<div class="content">
+<pre>#!/bin/bash
+echo -e "\e[40m 黑底 \e[0m"
+echo -e "\e[41m 红底 \e[0m"
+echo -e "\e[42m 绿底 \e[0m"
+echo -e "\e[43m 黄底 \e[0m"
+echo -e "\e[44m 蓝底 \e[0m"
+echo -e "\e[45m 紫底 \e[0m"
+echo -e "\e[46m 青底 \e[0m"
+echo -e "\e[47m 白底 \e[0m"
+echo -e "\e[100m 深灰色 \e[0m"
+echo -e "\e[101m 浅红字 \e[0m"
+echo -e "\e[102m 浅绿字 \e[0m"
+echo -e "\e[103m 浅黄字 \e[0m"
+echo -e "\e[104m 浅蓝字 \e[0m"
+echo -e "\e[105m 浅紫字 \e[0m"
+echo -e "\e[106m 浅青字 \e[0m"
+echo -e "\e[107m 白字 \e[0m"</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_示例"><a class="anchor" href="#_示例"></a>2.4. 示例</h3>
+<div class="listingblock">
+<div class="content">
+<pre>#!/bin/bash
+
+# This program is free software. It comes without any warranty, to
+# the extent permitted by applicable law. You can redistribute it
+# and/or modify it under the terms of the Do What The Fuck You Want
+# To Public License, Version 2, as published by Sam Hocevar. See
+# http://sam.zoy.org/wtfpl/COPYING for more details.
+
+#Background
+for clbg in {40..47} {100..107} 49 ; do
+	#Foreground
+	for clfg in {30..37} {90..97} 39 ; do
+		#Formatting
+		for attr in 0 1 2 4 5 7 ; do
+			#Print the result
+			echo -en "\e[${attr};${clbg};${clfg}m ^[${attr};${clbg};${clfg}m \e[0m"
+		done
+		echo #Newline
+	done
+done
+exit 0</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

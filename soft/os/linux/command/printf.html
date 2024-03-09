@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="格式化输出">
+<title>printf</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>printf</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_格式化">1. 格式化</a></li>
+<li><a href="#_转义">2. 转义</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_格式化"><a class="anchor" href="#_格式化"></a>1. 格式化</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 1. printf 的格式化</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">格式</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">输出一个字符串，%-10s 指一个宽度为 10 个字符（- 表示左对齐，没有则表示右对齐），任何字符都会被显示在 10 个字符宽的字符内，如果不足则自动以空格填充，超过也会将内容全部显示出来。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">输出一个字符</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">整型输出</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%f</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">输出实数，以小数形式输出，%-4.2f 指格式化为小数，其中 .2 指保留2位小数。</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">示例</div>
+<div class="content">
+<pre># 默认右对齐，多个格式要用引号
+printf "%4s %4s" abc def
+ abc def
+# 左对齐
+printf "%-4s %-3s" abc def
+abc  def
+# 格式比参数少，格式被复用
+printf %-4s abc def
+abc def
+# 格式复用是整个格式串复用
+printf "%s %s %s\n" a b c d e f g h i j
+a b c
+d e f
+g h i
+j</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_转义"><a class="anchor" href="#_转义"></a>2. 转义</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 2. printf 的转义序列</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">序列</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">警告字符，通常为ASCII的BEL字符</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\b</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">后退</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">抑制（不显示）输出结果中任何结尾的换行字符（只在%b格式指示符控制下的参数字符串中有效），而且，任何留在参数里的字符、任何接下来的参数以及任何留在格式字符串中的字符，都被忽略</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\f</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">换页（formfeed）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">换行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\r</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">回车（Carriage return）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\t</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">水平制表符</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\v</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">垂直制表符</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\\</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">一个字面上的反斜杠字符</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\ddd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">表示1到3位数八进制值的字符。仅在格式字符串中有效</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\0ddd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">表示1到3位的八进制值字符</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

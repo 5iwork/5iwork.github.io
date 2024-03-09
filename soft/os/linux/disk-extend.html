@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="Linux磁盘磁盘扩容">
 <title>磁盘扩容</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
@@ -18,6 +20,7 @@
 <div id="toctitle">本页目录</div>
 <ul class="sectlevel1">
 <li><a href="#_centos根目录扩充磁盘空间">1. CentOs根目录扩充磁盘空间</a></li>
+<li><a href="#_gdisk解决磁盘分区2t限制">2. gdisk解决磁盘分区2T限制</a></li>
 </ul>
 </div>
 </div>
@@ -305,7 +308,6 @@ tmpfs                       9.8G   28K  9.8G   1% /dev/shm
 tmpfs                       9.8G  8.6M  9.8G   1% /run
 tmpfs                       9.8G     0  9.8G   0% /sys/fs/cgroup
 /dev/sda1                  1014M  145M  870M  15% /boot
-//192.168.1.160/sharefunds  437G  159G  279G  37% /mnt/sharefunds
 tmpfs                       2.0G     0  2.0G   0% /run/user/0</pre>
 </div>
 </div>
@@ -340,7 +342,6 @@ tmpfs                       9.8G   28K  9.8G   1% /dev/shm
 tmpfs                       9.8G  8.5M  9.8G   1% /run
 tmpfs                       9.8G     0  9.8G   0% /sys/fs/cgroup
 /dev/sda1                  1014M  145M  870M  15% /boot
-//192.168.1.160/sharefunds  437G  159G  279G  37% /mnt/sharefunds
 tmpfs                       2.0G     0  2.0G   0% /run/user/0</pre>
 </div>
 </div>
@@ -349,15 +350,26 @@ tmpfs                       2.0G     0  2.0G   0% /run/user/0</pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_gdisk解决磁盘分区2t限制"><a class="anchor" href="#_gdisk解决磁盘分区2t限制"></a>2. gdisk解决磁盘分区2T限制</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://blog.csdn.net/rockstics/article/details/110931654" class="bare">https://blog.csdn.net/rockstics/article/details/110931654</a></p>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-06 10:46:05 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

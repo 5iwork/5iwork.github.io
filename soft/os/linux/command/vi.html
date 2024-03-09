@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="编辑器之神">
+<title>vi</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>vi</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_宏概念">1. 宏概念</a></li>
+<li><a href="#_快捷键">2. 快捷键</a></li>
+<li><a href="#_跳转">3. 跳转</a></li>
+<li><a href="#_大小写转换">4. 大小写转换</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_宏概念"><a class="anchor" href="#_宏概念"></a>1. 宏概念</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">命令</th>
+<th class="tableblock halign-left valign-top">说明</th>
+<th class="tableblock halign-left valign-top">重复</th>
+<th class="tableblock halign-left valign-top">回退</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">{edit}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">修改</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">f{char}/t{char}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在行内找下一个字符</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F{char}/T{char}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在行内找上一个字符</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/pattern&lt;CR&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在文档中查找下一个匹配</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">?pattern&lt;CR&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在文档中查找下一个匹配</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:s/{target}/{replacement}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">替换</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&amp;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">qx{changes}q</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">一系列修改</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_快捷键"><a class="anchor" href="#_快捷键"></a>2. 快捷键</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">快捷键</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">i</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insert，在光标所在处输入</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">I</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在当前光标所在行的行首输入</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">append，在光标所在处后面输入</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在当前光标所在行的行尾输入</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在当前光标所在行的下方打开一个新行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在当前光标所在行的上方打开一个新行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ZZ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">保存退出</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ZQ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不保存退出</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:q</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">退出</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:q!</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">强制退出，丢弃做出的修改</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:wq</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">保存退出</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">保存退出</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_跳转"><a class="anchor" href="#_跳转"></a>3. 跳转</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 1. 跳转</caption>
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">分类</th>
+<th class="tableblock halign-left valign-top">命令键</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock">通用</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fx</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转到下一个出现字母x的地方</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转到一个主题</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+o</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳回原来位置</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="6"><p class="tableblock">页间</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+f</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向文件尾部翻一屏</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+b</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向文件首部翻一屏</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+d</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向文件尾部翻半屏</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+u</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向文件首部翻半屏</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+y</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向上滚屏</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ctrl+e</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向下滚屏</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="6"><p class="tableblock">页内</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">H</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">页首</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">页中间行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">L</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">页底</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将光标所在当前行移到屏幕顶端</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zz</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">光标所在当前行移到屏幕中间</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将光标所在当前行移到屏幕底端</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock">行间</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">#G</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转至由#指定行，如1G跳转到第一行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">G</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最后一行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">第一行，同 <code>1G</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock">行内</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">^</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转至行首的第一个非空白字符</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转至行首</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转至行尾</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">段落间</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">下一段</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">{</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">上一段</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">句间</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">下一句</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">上一句</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="13"><p class="tableblock">代码块</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[[</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向前跳转到当前函数的{处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">][</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向后跳转到当前函数的}处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向前跳转到上一个函数的}处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">]]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">向后跳转到下一个函数的{处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[#</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在#if和#else以及#endif之间向前跳转</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">]#</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在#if和#else以及#endif之间向后跳转</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[(</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">表示跳转到当前区块的( 处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转到当前区块的) 处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[{</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转到当前区块的{处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">]}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转到当前区块的}处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转到注释的/* 处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">]/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">跳转到注释的*/处</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">括号匹配跳转</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_大小写转换"><a class="anchor" href="#_大小写转换"></a>4. 大小写转换</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gu</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">小写,前后都可以指定范围</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">大写</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0gu$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前行全部转小写：可以分三部分解释 [0]：光标定位到行首  gu：选定范围统统变小写  [G]一直操作到行尾</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1GguG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">整个文档全部转小写：可以分三部分解释 [1G]：光标定位到文件首  gu：选定范围统统变小写  [G]一直操作到文件结束部分</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

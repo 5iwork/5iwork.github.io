@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="时间和日期处理">
+<title>date</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>date</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_输出日期">1. 输出日期</a></li>
+<li><a href="#_计算日期">2. 计算日期</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_输出日期"><a class="anchor" href="#_输出日期"></a>1. 输出日期</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">输出日期格式</div>
+<div class="content">
+<pre>%%   输出字符 %
+%a   星期几的缩写 (Sun..Sat)
+%A   星期的完整名称(Sunday..Saturday)。
+%b   缩写的月份名称（例如，Jan）
+%B   完整的月份名称（例如，January）
+%c   本地日期和时间（例如，Thu Mar  3 23:05:25 2005）
+%C   世纪，和%Y类似，但是省略后两位（例如，20）
+%d   日 (01..31)
+%D   日期，等价于%m/%d/%y
+%e   一月中的一天，格式使用空格填充，等价于%_d
+%F   完整的日期；等价于 %Y-%m-%d
+%g   ISO 标准计数周的年份的最后两位数字
+%G   ISO 标准计数周的年份，通常只对%V有用
+%h   等价于 %b
+%H   小时 (00..23)
+%I   小时 (01..12)
+%j   一年中的第几天 (001..366)
+%k   小时，使用空格填充 ( 0..23); 等价于 %_H
+%l   小时, 使用空格填充 ( 1..12); 等价于 %_I
+%m   月份 (01..12)
+%M   分钟 (00..59)
+%n   新的一行，换行符
+%N   纳秒 (000000000..999999999)
+%p   用于表示当地的AM或PM，如果未知则为空白
+%P   类似 %p, 但是是小写的
+%r   本地的 12 小时制时间(例如 11:11:04 PM)
+%R   24 小时制 的小时与分钟; 等价于 %H:%M
+%s   自 1970-01-01 00:00:00 UTC 到现在的秒数
+%S   秒 (00..60)
+%t   插入水平制表符 tab
+%T   时间; 等价于 %H:%M:%S
+%u   一周中的一天 (1..7); 1 表示星期一
+%U   一年中的第几周，周日作为一周的起始 (00..53)
+%V   ISO 标准计数周，该方法将周一作为一周的起始 (01..53)
+%w   一周中的一天（0..6），0代表星期天
+%W   一年中的第几周，周一作为一周的起始（00..53）
+%x   本地的日期格式（例如，12/31/99）
+%X   本地的日期格式（例如，23:13:48）
+%y   年份后两位数字 (00..99)
+%Y   年
+%z   +hhmm 格式的数值化时区格式（例如，-0400）
+%:z  +hh:mm 格式的数值化时区格式（例如，-04:00）
+%::z  +hh:mm:ss格式的数值化时区格式（例如，-04:00:00）
+%:::z  数值化时区格式，相比上一个格式增加':'以显示必要的精度（例如，-04，+05:30）
+%Z  时区缩写 （如 EDT）</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">输出日期实例</div>
+<div class="content">
+<pre>date '+%F %T'
+date '+%F %T.%3N'
+date '+%F◷%T'
+#2023-11-07◷15:31:00
+date '+%y%m%d%H%M%S'
+#240130114102
+date '+%s'
+#时间戳
+date '+%Y'
+#四位年份
+date '+%y'
+#两位年份
+date '+%m'
+#月份（01-12）
+date '+%d'
+#日（01）
+date '+%H'
+#时（00-23）
+date '+%M'
+#分（00-59）
+date '+%S'
+#秒（00-60）</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_计算日期"><a class="anchor" href="#_计算日期"></a>2. 计算日期</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">计算日期</div>
+<div class="content">
+<pre>date -d -7day  +"%Y-%m-%d"
+#七天前日期
+date -d "+1 day" +%Y%m%d       # 显示后一天的日期
+date -d "-1 day" +%Y%m%d       # 显示前一天的日期
+date -d "-1 month" +%Y%m%d     # 显示上一月的日期
+date -d "+1 month" +%Y%m%d     # 显示下一月的日期
+date -d "-1 year" +%Y%m%d      # 显示前一年的日期
+date -d "+1 year" +%Y%m%d      # 显示下一年的日期</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">计算耗时</div>
+<div class="content">
+<pre>start=$(date +%s)
+sleep 4
+end=$(date +%s)
+echo "总耗时：$[$end-$start] 秒。"</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

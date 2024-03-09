@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="Mac升级最新bash">
+<title>Mac升级bash</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article">
+<div id="header">
+<h1>Mac升级bash</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Mac自带的bash是3.x版本的，很多特性不支持，比如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>declare: -A</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>因此需要将bash升级到最新版本</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># 安装最新版本的bash
+brew install bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>安装完后查看bash版本：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>bash --version</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>需要注意的是，新版本的bash安装后的链接文件为： <code>/usr/local/bin/bash</code> , 之前系统自带的是 <code>/bin/bash</code>，而我们脚本里一般都会指定 <code><mark>!/bin/bash</code>，由于MacOS有系统完整性保护机制（System Integrity Protection，SIP），它会阻止所有用户（包括root）修改 /bin 下面目录的内容。所以如果直接执行脚本依然会使用苹果自带的，此时可以直接使用 <code>bash xxx.sh</code> 来制定使用新版本的bash，或者修改脚本文件里的 <code></mark>!/bin/bash</code> 为 <code>#!/usr/local/bin/bash</code></p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="AWK是专门为文本处理设计的编程语言">
+<title>awk</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>awk</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_语法">1. 语法</a>
+<ul class="sectlevel2">
+<li><a href="#_参数">1.1. 参数</a></li>
+<li><a href="#_处理规则">1.2. 处理规则</a></li>
+</ul>
+</li>
+<li><a href="#_生命周期">2. 生命周期</a></li>
+<li><a href="#_内置变量">3. 内置变量</a></li>
+<li><a href="#_函数">4. 函数</a></li>
+<li><a href="#_匹配表达式">5. 匹配表达式</a></li>
+<li><a href="#_流程控制">6. 流程控制</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>AWK是一种处理文本文件的语言，是一个强大的文件分析工具。
+它是专门为文本处理设计的编程语言，也是行处理软件，通常用于扫描，过滤，统计汇总等工作，数据可以来自标准输入也可以是管道或文件。
+工作原理::
+当读到第一行时，匹配条件，然后执行指定动作，在接着读取第二行数据处理，不会默认输出。
+如果没有定义匹配条件，则是默认匹配所有数据行，awk隐含循环，条件匹配多少次，动作就会执行多少次。
+逐行读取文本，默认以空格或tab键为分割符进行分割，将分割所得的各个字段，保存到内建变量中，并按模式或或条件执行编辑命令。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_语法"><a class="anchor" href="#_语法"></a>1. 语法</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>awk [参数] [处理规则] [操作对象]</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_参数"><a class="anchor" href="#_参数"></a>1.1. 参数</h3>
+<div class="listingblock">
+<div class="content">
+<pre>-F : 指定文本分隔符 (本身默认是以空格作为分隔符</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_处理规则"><a class="anchor" href="#_处理规则"></a>1.2. 处理规则</h3>
+<div class="listingblock">
+<div class="content">
+<pre>1. BEGIN{} : 最开始执行
+2. //       : 正则及匹配
+3. {}       : 循环体
+4. END{}    : 最后执行</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_生命周期"><a class="anchor" href="#_生命周期"></a>2. 生命周期</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>grep,sed和awk都是读一行处理一行，直到处理完成</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>接收一行作为输入</p>
+</li>
+<li>
+<p>把刚刚读入进来得到文本进行分解</p>
+</li>
+<li>
+<p>使用处理规则处理文本</p>
+</li>
+<li>
+<p>输入一行，赋值给$0，直至处理完成</p>
+</li>
+<li>
+<p>把处理完成之后的所有数据交给END{}来再次处理</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_内置变量"><a class="anchor" href="#_内置变量"></a>3. 内置变量</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">内置变量</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">功能</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前处理的行的字段个数（就是：有多少列）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前处理的行的行号（就是：有多少行）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FNR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">读取文件的记录数（行号），从1开始，新的文件重新从1开始计数</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前处理的行的整行内容（就是：表示一行的内容）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前处理行的第n个字段（就是：第n列）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被处理的文件名</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">指定每行的字段分隔符，默认为空格或制表位（相当于选项 -F ）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OFS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">输出字段的分隔符，默认也是空格</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行分割符。awk从文件上读取资料时，将根据Rs的定义把资料切割成许多条记录，而awk一次仅读取一条记录，预设值是“\n“</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ORS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">输出分割符，默认也是换行符</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_函数"><a class="anchor" href="#_函数"></a>4. 函数</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>print   : 打印
+printf  : 格式化打印
+%s      : 字符串
+%d      : 数字
+-       : 左对齐
++       : 右对齐
+15      : 至少占用15字符</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_匹配表达式"><a class="anchor" href="#_匹配表达式"></a>5. 匹配表达式</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>&gt;       : 小于
+&lt;       : 大于
+&gt;=      : 小于等于
+&lt;=      : 大于等于
+~       : 正则匹配(包含)
+!~      : 正则匹配(不包含)
+&amp;&amp;      : 逻辑与
+||      : 逻辑或
+!       : 逻辑非
++       : 加
+-       : 减
+*		: 乘
+/		: 除
+%		: 求余</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_流程控制"><a class="anchor" href="#_流程控制"></a>6. 流程控制</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>if 使用格式:
+if(){}                 : 单分支
+if(){}else{}           : 双分支
+if(){}else if(){}else{} : 多分支</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

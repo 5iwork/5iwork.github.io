@@ -1,33 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="JDK下载">
 <title>JDK下载</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
 <h1>JDK下载</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_下载地址">1. 下载地址</a></li>
+<li><a href="#_环境变量设置">2. 环境变量设置</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_下载地址"><a class="anchor" href="#_下载地址"></a>1. 下载地址</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p><a href="http://jdk.java.net/19/" class="bare">http://jdk.java.net/19/</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://jdk.java.net/archive/" class="bare">https://jdk.java.net/archive/</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.oracle.com/java/technologies/downloads" class="bare">https://www.oracle.com/java/technologies/downloads</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_环境变量设置"><a class="anchor" href="#_环境变量设置"></a>2. 环境变量设置</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">~/.bash_profile</div>
+<div class="content">
+<pre>#JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home
+JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home
+PATH=$JAVA_HOME/bin:$PATH
+CLASSPATH=$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar
+export JAVA_HOME
+export PATH
+export CLASSPATH</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-04 13:09:23 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

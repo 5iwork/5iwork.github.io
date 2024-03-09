@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="嵌入式数据库介绍">
+<title>嵌入式数据库</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>嵌入式数据库</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_sqlite">1. SQLite</a></li>
+<li><a href="#_derby">2. Derby</a></li>
+<li><a href="#_h2">3. H2</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 1. 主流的嵌入式数据库对比</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">SQLite</th>
+<th class="tableblock halign-left valign-top">Derby</th>
+<th class="tableblock halign-left valign-top">H2</th>
+<th class="tableblock halign-left valign-top">HSQLDB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">语言</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JAVA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JAVA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JAVA</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">内存模式</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">事务隔离</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">基于代价的优化方式</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">数据库加密</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ODBC驱动</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">全文本搜索</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">多版本并发控制</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">主文件大小</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">~350kb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">~600kb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">~2MB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">~1MB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sqlite"><a class="anchor" href="#_sqlite"></a>1. SQLite</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>官网：https://www.sqlite.org</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_derby"><a class="anchor" href="#_derby"></a>2. Derby</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_h2"><a class="anchor" href="#_h2"></a>3. H2</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

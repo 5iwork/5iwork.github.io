@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="RabbitMQ消息模式">
+<title>RabbitMQ消息模式</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>RabbitMQ消息模式</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_轮询模式round_robin">1. 轮询模式（Round-Robin）</a>
+<ul class="sectlevel2">
+<li><a href="#_生产端">1.1. 生产端</a></li>
+<li><a href="#_消费端">1.2. 消费端</a></li>
+</ul>
+</li>
+<li><a href="#_公平分发fair_dispatch">2. 公平分发（Fair Dispatch）</a>
+<ul class="sectlevel2">
+<li><a href="#_生产端_2">2.1. 生产端</a></li>
+<li><a href="#_消费端_2">2.2. 消费端</a></li>
+<li><a href="#_参考文档">2.3. 参考文档</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>当有多个消费者监听同一个队列时，主要有两种模式：
+. 轮询模式的分发：一个消费者一条，按均分配；
+. 公平分发：根据消费者的消费能力进行公平分发，处理快的处理的多，处理慢的处理的少；按劳分配；</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_轮询模式round_robin"><a class="anchor" href="#_轮询模式round_robin"></a>1. 轮询模式（Round-Robin）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>该模式接收消息是当有多个消费者接入时，消息的分配模式是一个消费者分配一条，直至消息消费完成；</p>
+</div>
+<div class="sect2">
+<h3 id="_生产端"><a class="anchor" href="#_生产端"></a>1.1. 生产端</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static void main(String[] argv) throws IOException, TimeoutException {
+try (
+    Connection connection = Config.getConnectionFact().newConnection();
+    Channel channel = connection.createChannel() ){
+    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+    for(int i = 0; i &lt; 100; i++)
+    {
+        String msg = "测试" + i;
+        channel.basicPublish("", QUEUE_NAME, null, msg.getBytes(StandardCharsets.UTF_8));
+    }
+    System.out.println("消息发送完成！");
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_消费端"><a class="anchor" href="#_消费端"></a>1.2. 消费端</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static void main(String[] argv) throws IOException, TimeoutException {
+    Channel channel = getConsumerChannel();
+    DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+        String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+        System.out.println(" [x] Consumer1 Received '" + message + "'，时间：" + getTime());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //确认被消费
+        System.out.println(" [x] Consumer1 '" + message + "' 消费完成，时间：" + getTime());
+    };
+    //启动消费着
+    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    });
+}
+
+public static Channel getConsumerChannel() throws IOException, TimeoutException {
+    Connection connection = Config.getConnectionFact().newConnection();
+    Channel channel = connection.createChannel();
+    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+    return channel;
+}
+
+public static ConnectionFactory getConnectionFact () {
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.setHost("");
+    factory.setPort(5673);
+    factory.setUsername("");
+    factory.setPassword("");
+    return factory;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>启动自动应答</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_公平分发fair_dispatch"><a class="anchor" href="#_公平分发fair_dispatch"></a>2. 公平分发（Fair Dispatch）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>由于消息接收者处理消息的能力不同，存在处理快慢的问题，我们就需要能者多劳，处理快的多处理，处理慢的少处理；</p>
+</div>
+<div class="sect2">
+<h3 id="_生产端_2"><a class="anchor" href="#_生产端_2"></a>2.1. 生产端</h3>
+<div class="paragraph">
+<p>同轮询模式</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_消费端_2"><a class="anchor" href="#_消费端_2"></a>2.2. 消费端</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static void main(String[] argv) throws IOException, TimeoutException {
+    Channel channel = getConsumerChannel();
+    DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+        String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+        System.out.println(" [x] Consumer1 Received '" + message + "'，时间：" + getTime());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //确认被消费
+        channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false); <i class="conum" data-value="3"></i><b>(3)</b>
+        System.out.println(" [x] Consumer1 '" + message + "' 消费完成，时间：" + getTime());
+    };
+    //启动消费着
+    channel.basicConsume(QUEUE_NAME, false, deliverCallback, consumerTag -&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
+    });
+}
+
+public static Channel getConsumerChannel() throws IOException, TimeoutException {
+    Connection connection = Config.getConnectionFact().newConnection();
+    Channel channel = connection.createChannel();
+    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+    //设置流量
+    channel.basicQos(0,1,false); <i class="conum" data-value="1"></i><b>(1)</b>
+    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+    return channel;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>消费者一次接收一条消息</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>关闭自动应答</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>消费完后手动触发应答</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_参考文档"><a class="anchor" href="#_参考文档"></a>2.3. 参考文档</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://www.rabbitmq.com/tutorials/tutorial-one-dotnet.html" class="bare">https://www.rabbitmq.com/tutorials/tutorial-one-dotnet.html</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rabbitmq/rabbitmq-tutorials/tree/master/java" class="bare">https://github.com/rabbitmq/rabbitmq-tutorials/tree/master/java</a></p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

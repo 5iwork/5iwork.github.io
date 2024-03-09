@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="查找和搜索">
+<title>find</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>find</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_根据文件或者正则表达式进行匹配">1. 根据文件或者正则表达式进行匹配</a></li>
+<li><a href="#_根据文件类型进行搜索">2. 根据文件类型进行搜索</a></li>
+<li><a href="#_基于目录深度搜索">3. 基于目录深度搜索</a></li>
+<li><a href="#_根据文件时间戳进行搜索">4. 根据文件时间戳进行搜索</a></li>
+<li><a href="#_示例">5. 示例</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_根据文件或者正则表达式进行匹配"><a class="anchor" href="#_根据文件或者正则表达式进行匹配"></a>1. 根据文件或者正则表达式进行匹配</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>find /usr/ -path "*local*"
+find /home ! -name "*.txt"
+find . -regex ".*\(\.txt\|\.pdf\)$"</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_根据文件类型进行搜索"><a class="anchor" href="#_根据文件类型进行搜索"></a>2. 根据文件类型进行搜索</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>-type 类型参数</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 1. 类型参数列表</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">f</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">普通文件</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">l</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">符号连接</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">d</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">目录</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符设备</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">b</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">块设备</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">套接字</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">p</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fifo</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_基于目录深度搜索"><a class="anchor" href="#_基于目录深度搜索"></a>3. 基于目录深度搜索</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>-maxdepth 最大深度
+-mindepth 最小深度</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_根据文件时间戳进行搜索"><a class="anchor" href="#_根据文件时间戳进行搜索"></a>4. 根据文件时间戳进行搜索</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>访问时间（-atime/天，-amin/分钟）：用户最近一次访问时间。
+修改时间（-mtime/天，-mmin/分钟）：文件最后一次修改时间。
+变化时间（-ctime/天，-cmin/分钟）：文件数据元（例如权限等）最后一次修改时间。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_示例"><a class="anchor" href="#_示例"></a>5. 示例</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>查找目录：find /（查找范围） -name '查找关键字' -type d</p>
+</li>
+<li>
+<p>查找文件：find /（查找范围） -name 查找关键字 -print</p>
+</li>
+<li>
+<p>按照文件大小进行降序排列: <code>find ./ -type f -printf '%s %p\n' | sort -rn</code></p>
+</li>
+<li>
+<p>按照文件大小进行升序排列: <code>find ./ -type f -printf '%s %p\n' | sort -n</code></p>
+</li>
+<li>
+<p>查找最近10分钟修改的文件，并显示时间</p>
+<div class="listingblock">
+<div class="content">
+<pre>find . -mmin -10 -printf '%CY%Cm%Cd.%CH%CM\t%s\t%p\n'</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

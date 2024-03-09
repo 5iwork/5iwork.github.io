@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="Mysql安装及主备库配置">
 <title>Mysql安装配置</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
@@ -35,6 +37,7 @@
 <li><a href="#_星式同步">6. 星式同步</a>
 <ul class="sectlevel2">
 <li><a href="#_从库提升为主库">6.1. 从库提升为主库</a></li>
+<li><a href="#_导出视图报错">6.2. 导出视图报错</a></li>
 </ul>
 </li>
 </ul>
@@ -213,9 +216,11 @@ log-slaves-updates和read-only则要注释掉，执行reset master</p>
 </ol>
 </div>
 <div class="paragraph">
-<p>参考：https://www.cnblogs.com/alinuxer/p/9890462.html
-=== 导出视图报错</p>
+<p>参考：https://www.cnblogs.com/alinuxer/p/9890462.html</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_导出视图报错"><a class="anchor" href="#_导出视图报错"></a>6.2. 导出视图报错</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -259,12 +264,15 @@ flush privileges;</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-05 10:24:40 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="显示实时的磁盘活动">
+<title>iotop</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>iotop</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_简介">1. 简介</a></li>
+<li><a href="#_安装_iotop">2. 安装 iotop</a></li>
+<li><a href="#_监控脚本">3. 监控脚本</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_简介"><a class="anchor" href="#_简介"></a>1. 简介</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>iotop 是一个类似 top 的工具，用来显示实时的磁盘活动。Linux下的IO统计工具如iostat，nmon等大多数是只能统计到per设备的读写情况。iotop 监控 Linux 内核输出的 I/O 使用信息，并且显示一个系统中进程或线程的当前 I/O 使用情况。它显示每个进程/线程读写 I/O 带宽。它同样显示当等待换入和等待 I/O 的线程/进程花费的时间的百分比。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Total DISK READ 和 Total DISK WRITE
+的值一方面表示了进程和内核线程之间的总的读写带宽，另一方面也表示内核块设备子系统的。</p>
+</li>
+<li>
+<p>Actual DISK READ 和 Actual DISK WRITE 的值表示在内核块设备子系统和下面硬件（HDD、SSD
+等等）对应的实际磁盘 I/O 带宽。</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_安装_iotop"><a class="anchor" href="#_安装_iotop"></a>2. 安装 iotop</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>对于 Fedora 系统，使用 DNF 命令 来安装 iotop。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo dnf install iotop</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>对于 Debian/Ubuntu 系统，使用 API-GET 命令 或者 APT 命令 来安装 iotop。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo apt install iotop</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>对于基于 Arch Linux 的系统，使用 Pacman Command 来安装 iotop。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo pacman -S iotop</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>对于 RHEL/CentOS 的系统，使用 YUM Command 来安装 iotop。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo yum install iotop</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>对于使用 openSUSE Leap 的系统，使用 Zypper Command 来安装 iotop。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo zypper install iotop</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_监控脚本"><a class="anchor" href="#_监控脚本"></a>3. 监控脚本</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">iotap.sh</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">while true
+do
+	echo `date` &gt;&gt; /tmp/iotop.txt
+	iotop -b -o -n 2 -d 5 -t &gt;&gt; /tmp/iotop.txt
+	echo "--------" &gt;&gt; /tmp/iotop.txt
+	sleep 60
+done</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">iostat.sh</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">while true
+do
+	echo `date` &gt;&gt; /tmp/iostat.txt
+	iostat -zx &gt;&gt; /tmp/iostat.txt
+	echo "--------" &gt;&gt; /tmp/iostat.txt
+	sleep 60
+done</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

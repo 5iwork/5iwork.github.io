@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="内存数据库介绍">
+<title>内存数据库</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>内存数据库</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_分类">1. 分类</a>
+<ul class="sectlevel2">
+<li><a href="#_键值对内存数据库">1.1. 键值对内存数据库</a></li>
+<li><a href="#_关系型内存数据库">1.2. 关系型内存数据库</a></li>
+<li><a href="#_其他类型的内存数据库">1.3. 其他类型的内存数据库</a></li>
+</ul>
+</li>
+<li><a href="#_现状">2. 现状</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_分类"><a class="anchor" href="#_分类"></a>1. 分类</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_键值对内存数据库"><a class="anchor" href="#_键值对内存数据库"></a>1.1. 键值对内存数据库</h3>
+<div class="paragraph">
+<p>键值对（KV, Key-Value）内存数据库指的是一种以键值对为主要存储结构的内存数据库。键值对内存数据库通常按键进行数据存取操作，值通常支持各种数据类型，使用键值存储的数据模型相对简单，更适合要求性能高、计算简单的一些场景。键值对内存数据库的典型代表为 Redis、Memcached 和 Aerospike。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_关系型内存数据库"><a class="anchor" href="#_关系型内存数据库"></a>1.2. 关系型内存数据库</h3>
+<div class="paragraph">
+<p>关系型内存数据库是一种基于数据关系模型的内存数据库。关系型内存数据库将传统的关系型数据库表搬到内存中，支持通过 SQL语句的方式实现对内存数据的访问，在实现复杂分析功能的同时，提升数据访问速度。关系型内存数据库的典型代表软件为 Oracle TimesTen、SAP HANA、MemSQL 和 SQLite。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_其他类型的内存数据库"><a class="anchor" href="#_其他类型的内存数据库"></a>1.3. 其他类型的内存数据库</h3>
+<div class="paragraph">
+<p>除键值对内存数据库、关系型内存数据库之外，其他比较小众的内存数据库称为其他内存数据库，比如图内存数据库 RedisGraph 等。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_现状"><a class="anchor" href="#_现状"></a>2. 现状</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>现有内存数据库对比</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">数据库</th>
+<th class="tableblock halign-left valign-top">数据结构</th>
+<th class="tableblock halign-left valign-top">起始年份</th>
+<th class="tableblock halign-left valign-top">License</th>
+<th class="tableblock halign-left valign-top">ACID支持</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Redis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">键值对</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2009</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">开源BSD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Memcached</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">键值对</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2003</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">开源BSD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aerospike</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">键值对</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">开源AGPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">只支持原子性</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ignite</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">键值对/关系型</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2013</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">开源Apache2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VoltDB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">关系型</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2010</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">商用/开源GPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SQLite</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">关系型</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">开源Public domain</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">H2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">关系型</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">开源</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">支持</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

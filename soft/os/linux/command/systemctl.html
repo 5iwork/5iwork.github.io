@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="管理系统">
+<title>systemctl</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>systemctl</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_系统管理">1. 系统管理</a></li>
+<li><a href="#_unit管理">2. Unit管理</a>
+<ul class="sectlevel2">
+<li><a href="#_配置文件状态">2.1. 配置文件状态</a></li>
+<li><a href="#_配置文件格式">2.2. 配置文件格式</a>
+<ul class="sectlevel3">
+<li><a href="#_unit区块">2.2.1. Unit区块</a></li>
+</ul>
+</li>
+<li><a href="#_service区块">2.3. Service区块</a></li>
+<li><a href="#_install区块">2.4. Install区块</a></li>
+</ul>
+</li>
+<li><a href="#_target">3. Target</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>systemctl是 Systemd 的主命令，用于管理系统。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_系统管理"><a class="anchor" href="#_系统管理"></a>1. 系统管理</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">系统管理</div>
+<div class="content">
+<pre># 重启系统
+$ sudo systemctl reboot
+
+# 关闭系统，切断电源
+$ sudo systemctl poweroff
+
+# CPU停止工作
+$ sudo systemctl halt
+
+# 暂停系统
+$ sudo systemctl suspend
+
+# 让系统进入冬眠状态
+$ sudo systemctl hibernate
+
+# 让系统进入交互式休眠状态
+$ sudo systemctl hybrid-sleep
+
+# 启动进入救援状态（单用户状态）
+$ sudo systemctl rescue</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_unit管理"><a class="anchor" href="#_unit管理"></a>2. Unit管理</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>资源统称为 Unit（单位）</p>
+</div>
+<div class="listingblock">
+<div class="title">Unit管理命令</div>
+<div class="content">
+<pre># 列出正在运行的 Unit
+$ systemctl list-units
+
+# 列出所有Unit，包括没有找到配置文件的或者启动失败的
+$ systemctl list-units --all
+
+# 列出所有没有运行的 Unit
+$ systemctl list-units --all --state=inactive
+
+# 列出所有加载失败的 Unit
+$ systemctl list-units --failed
+
+# 列出所有正在运行的、类型为 service 的 Unit
+$ systemctl list-units --type=service
+
+# 显示系统状态
+$ systemctl status
+
+# 显示单个 Unit 的状态
+$ sysystemctl status bluetooth.service
+
+# 显示远程主机的某个 Unit 的状态
+$ systemctl -H root@rhel7.example.com status httpd.service
+
+# 显示某个 Unit 是否正在运行
+$ systemctl is-active application.service
+
+# 显示某个 Unit 是否处于启动失败状态
+$ systemctl is-failed application.service
+
+# 显示某个 Unit 服务是否建立了启动链接
+$ systemctl is-enabled application.service
+
+# 立即启动一个服务
+$ sudo systemctl start apache.service
+
+# 立即停止一个服务
+$ sudo systemctl stop apache.service
+
+# 重启一个服务
+$ sudo systemctl restart apache.service
+
+# 杀死一个服务的所有子进程
+$ sudo systemctl kill apache.service
+
+# 重新加载一个服务的配置文件
+$ sudo systemctl reload apache.service
+
+# 重载所有修改过的配置文件
+$ sudo systemctl daemon-reload
+
+# 显示某个 Unit 的所有底层参数
+$ systemctl show httpd.service
+
+# 显示某个 Unit 的指定属性的值
+$ systemctl show -p CPUShares httpd.service
+
+# 设置某个 Unit 的指定属性
+$ sudo systemctl set-property httpd.service CPUShares=500
+
+# Unit 之间存在依赖关系：A 依赖于 B，就意味着 Systemd 在启动 A 的时候，同时会去启动 B
+# 列出一个 Unit 的所有依赖
+$ systemctl list-dependencies --all nginx.service
+
+# 激活开机启动
+$ sudo systemctl enable clamd@scan.service
+# 等同于
+$ sudo ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
+
+# 撤销符号链接关系，相当于撤销开机启动
+sudo systemctl disable clamd@scan.service
+
+# 重新加载配置文件
+$ sudo systemctl daemon-reload</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 1. Unit类型</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">系统服务</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Target unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">多个 Unit 构成的一个组</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Device Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">硬件设备</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mount Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">文件系统的挂载点</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Automount Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">自动挂载点</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">文件或路径</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scope Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不是由 Systemd 启动的外部进程</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Slice Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">进程组</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Snapshot Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Systemd 快照，可以切回某个快照</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Socket Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">进程间通信的 socket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Swap Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">swap 文件</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timer Unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定时器</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Systemd 默认从目录/etc/systemd/system/读取配置文件，里面存放的大部分文件都是符号链接，指向目录/usr/lib/systemd/system/，这里是真正的配置文件存放目录。</p>
+</div>
+<div class="sect2">
+<h3 id="_配置文件状态"><a class="anchor" href="#_配置文件状态"></a>2.1. 配置文件状态</h3>
+<div class="listingblock">
+<div class="content">
+<pre># 列出所有配置文件
+$ systemctl list-unit-files
+
+# 列出指定类型的配置文件
+$ systemctl list-unit-files --type=service</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 2. 配置文件状态</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">已建立启动链接</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">没建立启动链接</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">static</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">该配置文件没有[Install]部分（无法执行），只能作为其他配置文件的依赖</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">masked</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">该配置文件被禁止建立启动链接</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_配置文件格式"><a class="anchor" href="#_配置文件格式"></a>2.2. 配置文件格式</h3>
+<div class="listingblock">
+<div class="title">格式简要示例</div>
+<div class="content">
+<pre>[Unit]
+Description=test        # 简单描述服务
+After=network.target    # 描述服务类别，表示本服务需要在network服务启动后在启动
+Before=xxx.service      # 表示需要在某些服务启动之前启动，After和Before字段只涉及启动顺序，不涉及依赖关系
+
+[Service]
+Type=forking            # 设置服务的启动方式
+User=USER               # 设置服务运行的用户
+Group=USER              # 设置服务运行的用户组
+WorkingDirectory=/PATH  # 设置服务运行的路径(cwd)
+KillMode=control-group  # 定义systemd如何停止服务
+Restart=no              # 定义服务进程退出后，systemd的重启方式，默认是不重启
+ExecStart=/start.sh     # 服务启动命令，命令需要绝对路径（采用sh脚本启动其他进程时Type须为forking）
+
+[Install]
+WantedBy=multi-user.target  # 多用户</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">区块</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[Unit]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启动顺序与依赖关系</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[Service]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启动行为定义</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[Install]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">服务安装定义</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html">Unit 配置文件官方文档</a></p>
+</div>
+<div class="sect3">
+<h4 id="_unit区块"><a class="anchor" href="#_unit区块"></a>2.2.1. Unit区块</h4>
+<div class="paragraph">
+<p>[Unit]区块通常是配置文件的第一个区块，用来定义 Unit 的元数据，以及配置与其他 Unit 的关系。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">简短描述</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Documentation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">文档地址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requires</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">强依赖定义，当前 Unit 依赖的其他 Unit，如果它们没有运行，当前 Unit 会启动失败</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wants</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">弱依赖定义，与当前 Unit 配合的其他 Unit，如果它们没有运行，当前 Unit 不会启动失败</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BindsTo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">与Requires类似，它指定的 Unit 如果退出，会导致当前 Unit 停止运行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Before</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之后启动</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">After</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之前启动</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conflicts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">这里指定的 Unit 不能与当前 Unit 同时运行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Condition&#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前 Unit 运行必须满足的条件，否则不会运行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assert&#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前 Unit 运行必须满足的条件，否则会报启动失败</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_service区块"><a class="anchor" href="#_service区块"></a>2.3. Service区块</h3>
+<div class="paragraph">
+<p>[Service]区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义启动时的进程行为。<a href="#service_type">值域参考</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExecStart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启动当前服务的命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExecStartPre</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启动当前服务之前执行的命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExecStartPost</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启动当前服务之后执行的命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExecReload</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">重启当前服务时执行的命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExecStop</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">停止当前服务时执行的命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExecStopPost</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">停止当其服务之后执行的命令</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RestartSec</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">自动重启当前服务间隔的秒数</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Restart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义何种情况 Systemd 会自动重启当前服务，可能的值包括always（总是重启）、on-success、on-failure、on-abnormal、on-abort、on-watchdog</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">KillMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义systemd如何停止服务。<a href="#kill_mode">值域参考</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TimeoutSec</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义 Systemd 停止当前服务之前等待的秒数</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Environment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">指定环境变量，如 <code>Environment=DATA_DIR=/dir/data</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnvironmentFile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">指定环境参数文件（路径），如 <code>EnviromentFile=-/etc/sysconfig/xxx</code> 连词号表示抑制错误，即发生错误时，不影响其他命令的执行。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">设置服务运行的用户</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">设置服务运行的用户组</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WorkingDirectory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">设置服务运行的路径</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RemainAfterExit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">可设为"yes"或"no"(默认值)，表示当该服务的所有进程全部退出之后，是否依然将此服务视为活动(active)状态。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GuessMainPID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">可设为"yes"(默认值)或"no"，表示在无法明确定位该服务的主进程的情况下，systemd 是否应该猜测主进程的PID(可能不正确)。 该选项仅在设置了 Type=forking 但未设置 PIDFile= 的情况下有意义。如果PID猜测错误，那么该服务的失败检测与自动重启功能将失效。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PIDFile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">守护进程的PID文件，必须是绝对路径。强烈建议在 Type=forking 的情况下明确设置此选项。 systemd 将会在此服务启动后从此文件中读取主守护进程的PID 。systemd 不会写入此文件，但会在此服务停止后删除它(若存在)。</p></td>
+</tr>
+</tbody>
+</table>
+<table id="service_type" class="tableblock frame-all grid-all stretch">
+<caption class="title">表 3. 启动类型，Service.Type值域</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">simple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">执行ExecStart指定的命令，启动主进程。设置了 ExecStart= 但未设置 BusName= 时的默认值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">forking</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">以 fork 方式从父进程创建子进程，ExecStart= 所设定的进程将会在启动过程中使用 fork() 系统调用。创建后父进程会立即退出，子进程将成为主进程（例如用 shell 脚本启动服务进程），也就是当所有的通信渠道都已建好、启动亦已成功之后，父进程将会退出，而子进程将作为该服务的主进程继续运行。 对于此种进程，建议同时设置 PIDFile= 选项，以帮助 systemd 准确定位该服务的主进程。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">oneshot</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">类似于 simple，但只执行一次，systemd 会等它执行完，才启动其他服务。未设置 ExecStart= 时的默认值。此种类型通常需要设置 RemainAfterExit= 选项。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dbus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">类似于 simple，但会等待 D-Bus 信号后启动。设置了 ExecStart= 与 BusName= 时的默认值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">notify</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">类似于 simple，启动结束后会发出通知信号，然后 systemd 再启动其他服务。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">idle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">类似于 simple，但是要等到其他任务都执行完，才会启动该服务。</p></td>
+</tr>
+</tbody>
+</table>
+<table id="kill_mode" class="tableblock frame-all grid-all stretch">
+<caption class="title">表 4. 重启行为，Service.KillMode值域</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">control-group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前控制组里面的所有子进程，都会被杀掉。默认值</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">process</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">只杀主进程。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">主进程将收到 SIGTERM 信号，子进程收到 SIGKILL 信号。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">没有进程会被杀掉，只是执行服务的 stop 命令。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Restart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义了服务退出后，Systemd 的重启方式，可以设置的值如下（对于守护进程，推荐设为 on-failure，对于那些允许发生错误退出的服务，可以设为 on-abnormal）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no（default）</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">退出后不会重启。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">on-success</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">只有正常退出时（退出状态码为0），才会重启。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">on-failure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">非正常退出时（退出状态码非0），包括被信号终止和超时，才会重启。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">on-abnormal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">只有被信号终止和超时，才会重启。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">on-abort</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">只有在收到没有捕捉到的信号终止时，才会重启。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">on-watchdog</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">超时退出，才会重启。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不管是什么退出原因，总是重启。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_install区块"><a class="anchor" href="#_install区块"></a>2.4. Install区块</h3>
+<div class="paragraph">
+<p>[Install]通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WantedBy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入/etc/systemd/system目录下面以 Target 名 + .wants后缀构成的子目录中</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RequiredBy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入/etc/systemd/system目录下面以 Target 名 + .required后缀构成的子目录中</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alias</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前 Unit 可用于启动的别名</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Also</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">当前 Unit 激活（enable）时，会被同时激活的其他 Unit</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_target"><a class="anchor" href="#_target"></a>3. Target</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Target 就是一个 Unit 组，包含许多相关的 Unit 。启动某个 Target 的时候，Systemd 就会启动里面所有的 Unit。</p>
+</div>
+<div class="olist arabic">
+<div class="title">Target和 init.d 里的 RunLevel 区别::</div>
+<ol class="arabic">
+<li>
+<p>RunLevel 是互斥的，不可能多个 RunLevel 同时启动，但是多个 Target 可以同时启动。</p>
+</li>
+<li>
+<p>默认的 RunLevel（在/etc/inittab文件设置）现在被默认的 Target 取代，位置是/etc/systemd/system/default.target，通常符号链接到graphical.target（图形界面）或者multi-user.target（多用户命令行）</p>
+</li>
+<li>
+<p>启动脚本的位置，以前是/etc/init.d目录，符号链接到不同的 RunLevel 目录 （比如/etc/rc3.d、/etc/rc5.d等），现在则存放在/lib/systemd/system和/etc/systemd/system目录</p>
+</li>
+<li>
+<p>配置文件的位置，以前init进程的配置文件是/etc/inittab，各种服务的配置文件存放在/etc/sysconfig目录。现在的配置文件主要存放在/lib/systemd目录，在/etc/systemd目录里面的修改可以覆盖原始设置。</p>
+</li>
+</ol>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">表 5. Target和 init.d 里的 RunLevel 关系</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">RunLevel</th>
+<th class="tableblock halign-left valign-top">Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runlevel 0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runlevel0.target &#8594; poweroff.target</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runlevel 1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runlevel1.target &#8594; rescue.target</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runlevel 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runlevel2.target &#8594; multi-user.target</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runlevel 3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runlevel3.target &#8594; multi-user.target</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runlevel 4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runlevel4.target &#8594; multi-user.target</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runlevel 5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runlevel5.target &#8594; graphical.target</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runlevel 6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runlevel6.target &#8594; reboot.target</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

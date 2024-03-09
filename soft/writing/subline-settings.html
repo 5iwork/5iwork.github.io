@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="Subline常用设置">
 <title>Subline实践</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
@@ -19,6 +21,8 @@
 <ul class="sectlevel1">
 <li><a href="#_subline支持vi模式">1. Subline支持Vi模式</a></li>
 <li><a href="#_tab转换为空格">2. tab转换为空格</a></li>
+<li><a href="#_支持打开命令行">3. 支持打开命令行</a></li>
+<li><a href="#_sublime正则使用">4. sublime正则使用</a></li>
 </ul>
 </div>
 </div>
@@ -60,15 +64,93 @@
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_支持打开命令行"><a class="anchor" href="#_支持打开命令行"></a>3. 支持打开命令行</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ctrl shift p 打开命令面板，输入 Install Package</p>
+</li>
+<li>
+<p>输入“Terminus”，安装，重启</p>
+</li>
+<li>
+<p>Preferences &gt;Package Settings &gt; Terminus &gt; Command Palette</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
+   {
+        "caption": "Terminal (panel)",
+        "command": "terminus_open",
+        "args"   : {
+           "cmd": "bash",
+           "cwd": "${file_path:${folder}}",
+           "title": "Command Prompt",
+           "panel_name": "Terminus"
+        }
+   }
+]</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>选择 Preferences &gt;Package Settings &gt; Terminus &gt; Key Bindings</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
+   {
+       "keys": ["alt+1"],
+       "command": "terminus_open",
+       "args" : {
+           "cmd": "bash",
+           "cwd": "${file_path:${folder}}",
+           "panel_name": "Terminus"
+       }
+   }
+]</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sublime正则使用"><a class="anchor" href="#_sublime正则使用"></a>4. sublime正则使用</h2>
+<div class="sectionbody">
+<div class="exampleblock">
+<div class="title">例 1. 行头插入内容</div>
+<div class="content">
+<div class="paragraph">
+<p>Find: ^
+Replace: 插入的内容</p>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">例 2. 行尾插入内容</div>
+<div class="content">
+<div class="paragraph">
+<p>Find: $
+Replace: 插入的内容</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-05 10:04:05 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="LDAP基本概念">
+<title>LDAP基本概念</title>
+<link rel="stylesheet" href="/tmp/static/css/5i.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
+<!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>LDAP基本概念</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">本页目录</div>
+<ul class="sectlevel1">
+<li><a href="#_目录结构">1. 目录结构</a></li>
+<li><a href="#_条目entry">2. 条目（Entry)</a></li>
+<li><a href="#_属性attribute">3. 属性（Attribute）</a></li>
+<li><a href="#_属性类型attributetype">4. 属性类型（AttributeType）</a></li>
+<li><a href="#_对象类objectclass">5. 对象类（ObjectClass）</a></li>
+<li><a href="#_模式schema">6. 模式（Schema）</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_目录结构"><a class="anchor" href="#_目录结构"></a>1. 目录结构</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>域名&#8594;部门&#8594;个人</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_条目entry"><a class="anchor" href="#_条目entry"></a>2. 条目（Entry)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>条目（Entry）就是目录管理的对象，他是LDAP中最基本的颗粒，就像字典中的词条，或者是数据库中的记录。通常对LDAP的添加、删除、更改、检索都是以条目为基本对象的。</p>
+</div>
+<div class="paragraph">
+<p>每一个条目都有一个唯一的标识名（distinguished Name ，DN），比如（1.1中图2互联网域名树形图）：cn=bu,ou=Ops,dc=fangmou,dc=com。DN在语法上是由多个相对的标识名（distinguished Name ，DN）组成的，他们之间由逗号分隔。如果把DN看做对象的全路径，那么RDN就是其中的每一段路径。通过DN的层次型语法结构，可以方便地表示出条目在LDAP树中的位置。有时在不一致引起歧义的情况下，RDN也特指DN中最靠前的一段，而剩余的部分称为父标识（Parent DN,PDN）。此处不再举例。RDN本身也可以由多个值构成，比如OU=Tech+CN=bu,dc=fangmou,dc=com中的RDN为OU=Tech+CN=bu，由2个值OU=Tech和CN=bu组成，他们之间由加好隔开。</p>
+</div>
+<div class="paragraph">
+<p>如果DN中含有一些特殊字符，比如：,=+&lt;&gt;;\”，他们需要转转义符(\)来帮助表述。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_属性attribute"><a class="anchor" href="#_属性attribute"></a>3. 属性（Attribute）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>每个条目都可以有很多属性（Attribute），比如常见的人都有姓名、地址、电话等属性。每个属性都有名称及对应的值，属性值可以有单个、多个。比如你有多个电话。</p>
+</div>
+<div class="paragraph">
+<p>LDAP为人员组织机构中常见的对象都设计了属性(比如commonName，surname)。下面有一些常用的别名</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">属性</th>
+<th class="tableblock halign-left valign-top">别名</th>
+<th class="tableblock halign-left valign-top">语法</th>
+<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-left valign-top">值(举例)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commonName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">姓名</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zhangsan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">surname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">姓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zhang</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">organizationalUnitName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ou</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">单位（部门）名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tech</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">organization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">组织（公司）名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fangmou</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">telephoneNumber</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Telephone Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">电话号码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">110</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">owner</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">该条目的拥有者</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cn=zhangsan,ou=ops,dc=fangmou</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jpegPhoto</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Binary</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JPEG照片</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_属性类型attributetype"><a class="anchor" href="#_属性类型attributetype"></a>4. 属性类型（AttributeType）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>每个属性都有唯一的属性类型（AttributeType），属性类型约定属性值的数据格式和语法类型（Syntax）。比如，属性cellPhone的类型为telephoneNumber，它规定了电话号码是由数字组成的，其中允许插入一些分隔符，如连接符、括号、空格等。</p>
+</div>
+<div class="paragraph">
+<p>属性类型也约定了属性值是否可以有多少个，多值属性类型也可以使人员信息的组织变得更加灵活并接近现实情况，比如：人员的手机、地址、邮箱等属性都可以有多个值。这样，用ldap组织的信息会比简单的表结构更加理想。</p>
+</div>
+<div class="paragraph">
+<p>类型也规定了属性查询时的匹配规则、排序顺序、大小写敏感等。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_对象类objectclass"><a class="anchor" href="#_对象类objectclass"></a>5. 对象类（ObjectClass）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>对象类（ObjectClass）是属性的集合，LDAP预想了很多人员组织机构中常见的对象，并将其封装成对象类。比如人员（person）含有姓（sn）、名（cn）、电话(telephoneNumber)、密码(userPassword)等属性，单位职工(organizationalPerson)是人员(person)的继承类，除了上述属性之外还含有职务（title）、邮政编码（postalCode）、通信地址(postalAddress)等属性。</p>
+</div>
+<div class="paragraph">
+<p>通过对象类可以方便的定义条目类型。每个条目可以直接继承多个对象类，这样就继承了各种属性。如果2个对象类中有相同的属性，则条目继承后只会保留1个属性。对象类同时也规定了那些属性是基本信息，必须含有(Must 活Required，必要属性)：哪些属性是扩展信息，可以含有（May或Optional，可选属性）。</p>
+</div>
+<div class="paragraph">
+<p>对象类有三种类型：结构类型（Structural）、抽象类型(Abstract)和辅助类型（Auxiliary）。结构类型是最基本的类型，它规定了对象实体的基本属性，每个条目属于且仅属于一个结构型对象类。抽象类型可以是结构类型或其他抽象类型父类，它通过将对象属性中共性的部分组织在一起，称为其他类的模板，条目不能直接集成抽象型对象类。辅助类型规定了对象实体的扩展属性。虽然每个条米只属于一个结构型对象类，但可以同时属于多个辅助型对象类。</p>
+</div>
+<div class="paragraph">
+<p>对象类本身是可以相互继承的，所以对象类的根类是top抽象型对象类。以常用的人员类型为例，他们的继承关系如下： top–&gt;person–&gt;organizationalPerson–&gt;inetOrgPerson</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_模式schema"><a class="anchor" href="#_模式schema"></a>6. 模式（Schema）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>对象类（ObjectClass）、属性类型（AttributeType）、语法（Syntax）分别约定了条目、属性、值，这些构成了模式(Schema)，模式中的每一个元素都有唯一的OID编号，条目数据在导入时通常需要接受模式检查，它确保了目录中所有的条目数据结构都是一致的。</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script src="/tmp/static/js/toc.js"></script>
+</body>
+</html>

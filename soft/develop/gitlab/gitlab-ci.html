@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="GitLab-CI配置及使用">
 <title>Gitlab-CI配置</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
@@ -58,7 +60,15 @@
 <pre>echo "项目命名空间:$CI_PROJECT_NAMESPACE"
 echo "项目名称:$CI_PROJECT_NAME"
 echo "提交分支:$CI_COMMIT_REF_NAME"
-echo "当前目录:$CI_PROJECT_DIR"</pre>
+echo "分支版本:$CI_COMMIT_REF_SLUG"
+echo "项目地址:$CI_PROJECT_URL"
+echo "提交人:$GITLAB_USER_LOGIN"
+echo "提交ID:$CI_COMMIT_SHA"
+echo "流水线ID:$CI_PIPELINE_ID"
+echo "提交时间:$CI_COMMIT_TIMESTAMP"
+echo "当前目录:$CI_PROJECT_DIR"
+echo "当前目录:$CI_PROJECT_DIR"
+http地址</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -173,7 +183,7 @@ nohup $deploy_path/$CI_PROJECT_NAME.jar $JAVA_OPTS &gt;/dev/null 2&gt;&amp;1 &am
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="yml" class="language-yml hljs">stages:
+<pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">stages:
 - deploy
 deploy:
   stage: deploy
@@ -194,7 +204,7 @@ deploy:
 <div class="listingblock">
 <div class="title">angular_npm_publish.sh</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">sed -i 's/"peerdependencies"/"dependencies"/g' package.json
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sed -i 's/"peerdependencies"/"dependencies"/g' package.json
 npm install
 sed -i 's/"dependencies"/"peerdependencies"/g' package.json
 npm run packagr
@@ -211,7 +221,7 @@ npm publish</code></pre>
 <h3 id="_安装gitlab_runner"><a class="anchor" href="#_安装gitlab_runner"></a>2.1. 安装gitlab-runner</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | sudo bash
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | sudo bash
 yum install gitlab-ci-multi-runner</code></pre>
 </div>
 </div>
@@ -255,7 +265,7 @@ check_interval = 0
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">gitlab_rails['rack_attack_git_basic_auth'] = {
     'enabled' =&gt; true, # 启用/禁用 Rack Attack
-    'ip_whitelist' =&gt; ["127.0.0.1","192.168.1.141"], # 白名单地址，多个IP用","隔开
+    'ip_whitelist' =&gt; ["127.0.0.1","192.168.1.1"], # 白名单地址，多个IP用","隔开
     'maxretry' =&gt; 300, # 限制每个IP尝试登陆的次数
     'findtime' =&gt; 5, # 5秒后重置每IP的授权计数器
     'bantime' =&gt; 60 # 对多次错误登陆的IP封禁1小时(3600秒)
@@ -333,7 +343,7 @@ gitlab_rails['backup_keep_time'] = 604800</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">sudo gitlab-ctl reconfigure
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo gitlab-ctl reconfigure
 sudo gitlab-ctl restart</code></pre>
 </div>
 </div>
@@ -478,14 +488,13 @@ npm_publish:
     - npm-ng-publish.sh
   when: manual
   tags:
-    - deploy
- ----
-
- .jar包前端</pre>
+    - deploy</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>stages:
+<div class="listingblock">
+<div class="title">jar包前端</div>
+<div class="content">
+<pre>stages:
 - npm_publish
 - mvn_deploy
 npm_publish:
@@ -506,23 +515,26 @@ mvn_deploy:
       - frontend/node_modules/
   script:
     - sed -i 's/"peerDependencies"/"dependencies"/g' frontend/package.json
-    - repo_public_deploy system system-pc-client
+    - repo_public_deploy
   when: manual
   tags:
-    - deploy
- ----</p>
+    - deploy</pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-04 13:09:23 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>

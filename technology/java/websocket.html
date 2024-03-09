@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="description" content="WebSocket后台通知集群">
 <title>WebSocket集群</title>
 <link rel="stylesheet" href="/tmp/static/css/5i.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css"> -->
 <!-- <link rel="stylesheet" href="https://5i.work/tmp/static/css/style.css"> -->
 </head>
@@ -67,8 +69,8 @@
 <div class="title">web.conf</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">upstream ms-websocket {
-    server  192.168.1.155:8091;
-    server  192.168.1.156:8091;
+    server  192.168.1.1:8091;
+    server  192.168.1.2:8091;
     ip_hash;
 }
 location = /notification/socket {
@@ -95,7 +97,7 @@ location = /notification/socket {
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;
     &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -104,7 +106,7 @@ location = /notification/socket {
 <div class="listingblock">
 <div class="title">producer.java</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Component("webSocketKafkaProducer")
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Component("webSocketKafkaProducer")
 @Slf4j
 public class WebSocketKafkaProducer {
 
@@ -121,7 +123,7 @@ public class WebSocketKafkaProducer {
 <div class="listingblock">
 <div class="title">cosumer.java</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Component
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Component
 @Slf4j
 public class WebSocketKafkaConsumer {
     @Autowired
@@ -150,12 +152,15 @@ public class WebSocketKafkaConsumer {
 </div>
 <div id="footer">
 <div id="footer-text">
-更新于 2022-02-04 19:30:21 +0800
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
 <script src="/tmp/static/js/toc.js"></script>
 </body>
